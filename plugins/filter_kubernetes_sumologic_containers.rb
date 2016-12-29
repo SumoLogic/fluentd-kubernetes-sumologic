@@ -45,7 +45,7 @@ module Fluent
 
         # Strip out dynamic bits from pod name.
         # NOTE: Kubernetes deployments append a template hash.
-        pod_parts = metadata[:pod].split('-')
+        pod_parts = k8s_metadata[:pod].split('-')
         if is_number?(pod_parts[-2])
           k8s_metadata[:pod_name] = pod_parts[0..-3].join('-')
         else
