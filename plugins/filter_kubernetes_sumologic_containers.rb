@@ -25,7 +25,7 @@ module Fluent
       # Set the sumo metadata fields
       sumo_metadata = record[:_sumo_metadata] = {}
       sumo_metadata[:log_format] = @log_format
-      sumo_metadata[:host] = metadata[:source_host] if @source_host
+      sumo_metadata[:host] = @source_host if @source_host
       sumo_metadata[:source] = @source_name if @source_name
 
       unless @source_category.nil?
@@ -55,7 +55,7 @@ module Fluent
         annotations = kubernetes.fetch('annotations', {})
 
         sumo_metadata[:log_format] = annotations['sumologic.com/format'] if annotations['sumologic.com/format']
-        sumo_metadata[:host] = k8s_metadata[:source_host]
+        sumo_metadata[:host] = k8s_metadata[:source_host] if k8s_metadata[:source_host]
         sumo_metadata[:source] = annotations['sumologic.com/sourceName'] % k8s_metadata if annotations['sumologic.com/sourceName']
 
         if annotations['sumologic.com/sourceCategory'].nil?
