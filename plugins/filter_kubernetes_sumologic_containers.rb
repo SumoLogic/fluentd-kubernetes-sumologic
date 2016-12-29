@@ -23,13 +23,16 @@ module Fluent
 
     def filter(tag, time, record)
       # Set the sumo metadata fields
-      sumo_metadata = record[:_sumo_metadata] = {}
+      sumo_metadata = record['_sumo_metadata'] || {}
       sumo_metadata[:log_format] = @log_format
       sumo_metadata[:host] = @source_host if @source_host
       sumo_metadata[:source] = @source_name if @source_name
 
       unless @source_category.nil?
-        sumo_metadata[:category] = @source_category.prepend(@source_category_prefix)
+        sumo_metadata[:category] = @source_category.dup
+        unless @source_category_prefix.nil?
+          sumo_metadata[:category].prepend(@source_category_prefix)
+        end
       end
 
       # Allow fields to be overridden by annotations
@@ -56,11 +59,18 @@ module Fluent
 
         sumo_metadata[:log_format] = annotations['sumologic.com/format'] if annotations['sumologic.com/format']
         sumo_metadata[:host] = k8s_metadata[:source_host] if k8s_metadata[:source_host]
-        sumo_metadata[:source] = annotations['sumologic.com/sourceName'] % k8s_metadata if annotations['sumologic.com/sourceName']
 
-        if annotations['sumologic.com/sourceCategory'].nil?
-          sumo_metadata[:category] = annotations['sumologic.com/sourceCategory'] % k8s_metadata.prepend(@source_category_prefix)
+        unless annotations['sumologic.com/sourceName'].nil?
+          sumo_metadata[:source] = annotations['sumologic.com/sourceName'] % k8s_metadata
+        else
+          sumo_metadata[:source] = sumo_metadata[:source] % k8s_metadata
+        end
+
+        unless annotations['sumologic.com/sourceCategory'].nil?
+          sumo_metadata[:category] = (annotations['sumologic.com/sourceCategory'] % k8s_metadata).prepend(@source_category_prefix)
           sumo_metadata[:category].gsub!('-', @source_category_replace_dash)
+        else
+          sumo_metadata[:category] = sumo_metadata[:category] % k8s_metadata
         end
 
         # Strip kubernetes metadata from json if disabled
@@ -71,7 +81,6 @@ module Fluent
 
         # Strip sumologic.com annotations
         kubernetes.delete('annotations') if annotations
-
       end
 
       record
