@@ -24,6 +24,8 @@ module Fluent
     def filter(tag, time, record)
       # Set the sumo metadata fields
       sumo_metadata = record['_sumo_metadata'] || {}
+      record['_sumo_metadata'] = sumo_metadata
+
       sumo_metadata[:log_format] = @log_format
       sumo_metadata[:host] = @source_host if @source_host
       sumo_metadata[:source] = @source_name if @source_name
@@ -60,18 +62,18 @@ module Fluent
         sumo_metadata[:log_format] = annotations['sumologic.com/format'] if annotations['sumologic.com/format']
         sumo_metadata[:host] = k8s_metadata[:source_host] if k8s_metadata[:source_host]
 
-        unless annotations['sumologic.com/sourceName'].nil?
-          sumo_metadata[:source] = annotations['sumologic.com/sourceName'] % k8s_metadata
-        else
+        if annotations['sumologic.com/sourceName'].nil?
           sumo_metadata[:source] = sumo_metadata[:source] % k8s_metadata
+        else
+          sumo_metadata[:source] = annotations['sumologic.com/sourceName'] % k8s_metadata
         end
 
-        unless annotations['sumologic.com/sourceCategory'].nil?
-          sumo_metadata[:category] = (annotations['sumologic.com/sourceCategory'] % k8s_metadata).prepend(@source_category_prefix)
-          sumo_metadata[:category].gsub!('-', @source_category_replace_dash)
-        else
+        if annotations['sumologic.com/sourceCategory'].nil?
           sumo_metadata[:category] = sumo_metadata[:category] % k8s_metadata
+        else
+          sumo_metadata[:category] = (annotations['sumologic.com/sourceCategory'] % k8s_metadata).prepend(@source_category_prefix)
         end
+        sumo_metadata[:category].gsub!('-', @source_category_replace_dash)
 
         # Strip kubernetes metadata from json if disabled
         if annotations['sumologic.com/kubernetes_meta'] == 'false' || !@kubernetes_meta
@@ -81,8 +83,8 @@ module Fluent
 
         # Strip sumologic.com annotations
         kubernetes.delete('annotations') if annotations
-      end
 
+      end
       record
     end
   end
