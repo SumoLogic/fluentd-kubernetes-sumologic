@@ -38,7 +38,7 @@ The following options can be configured as environment variables on the DaemonSe
 * `LOG_FORMAT` - Format to post logs into Sumo. `json` or `text` (default `json`)
   * text - Logs will appear in SumoLogic in text format
   * json - Logs will appear in SumoLogic in json format.
-  * merge_json_log - Same as json but if the container logs in json format to stdout it will merge in the container json log at the root level and remove the `log` field.
+  * json_merge - Same as json but if the container logs in json format to stdout it will merge in the container json log at the root level and remove the `log` field.
 * `KUBERNETES_META` - Include or exclude Kubernetes metadata such as namespace and pod_name if using json log format. (default `true`)
 
 The `LOG_FORMAT`, `SOURCE_CATEGORY` and `SOURCE_NAME` can be overridden per pod using [annotations](http://kubernetes.io/v1.0/docs/user-guide/annotations.html). For example
