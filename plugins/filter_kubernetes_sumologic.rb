@@ -38,7 +38,7 @@ module Fluent
       end
 
       # Allow fields to be overridden by annotations
-      unless record.fetch('kubernetes').nil?
+      if record.key?('kubernetes') and not record.fetch('kubernetes').nil?
         # Clone kubernetes hash so we don't override the cache
         kubernetes = record['kubernetes'].clone
         k8s_metadata = {
