@@ -12,6 +12,10 @@ module Fluent
     config_param :source_name, :string, :default => '%{namespace}.%{pod}.%{container}'
     config_param :log_format, :string, :default => 'json'
     config_param :source_host, :string, :default => nil
+    config_param :exclude_namespace_regex, :string, :default => nil
+    config_param :exclude_pod_regex, :string, :default => nil
+    config_param :exclude_container_regex, :string, :default => nil
+    config_param :exclude_host_regex, :string, :default => nil
 
     def configure(conf)
       super
@@ -48,6 +52,30 @@ module Fluent
             :source_host => kubernetes['host'],
         }
 
+        unless @exclude_namespace_regex.empty?
+          if Regexp.compile(@exclude_namespace_regex).match(k8s_metadata[:namespace])
+            return nil
+          end
+        end
+
+        unless @exclude_pod_regex.empty?
+          if Regexp.compile(@exclude_pod_regex).match(k8s_metadata[:pod])
+            return nil
+          end
+        end
+
+        unless @exclude_container_regex.empty?
+          if Regexp.compile(@exclude_container_regex).match(k8s_metadata[:container])
+            return nil
+          end
+        end
+
+        unless @exclude_host_regex.empty?
+          if Regexp.compile(@exclude_host_regex).match(k8s_metadata[:source_host])
+            return nil
+          end
+        end
+
         # Strip out dynamic bits from pod name.
         # NOTE: Kubernetes deployments append a template hash.
         pod_parts = k8s_metadata[:pod].split('-')
@@ -58,6 +86,10 @@ module Fluent
         end
 
         annotations = kubernetes.fetch('annotations', {})
+
+        if annotations['sumologic.com/exclude'] == 'true'
+          return nil
+        end
 
         sumo_metadata[:log_format] = annotations['sumologic.com/format'] if annotations['sumologic.com/format']
         sumo_metadata[:host] = k8s_metadata[:source_host] if k8s_metadata[:source_host]
