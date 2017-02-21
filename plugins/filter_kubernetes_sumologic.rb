@@ -87,7 +87,7 @@ module Fluent
 
         annotations = kubernetes.fetch('annotations', {})
 
-        if annotations['sumologic.com/excludeFromSumo'] == 'true'
+        if annotations['sumologic.com/exclude'] == 'true'
           return nil
         end
 
