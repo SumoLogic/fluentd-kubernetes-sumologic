@@ -40,6 +40,18 @@ The following options can be configured as environment variables on the DaemonSe
   * json - Logs will appear in SumoLogic in json format.
   * json_merge - Same as json but if the container logs in json format to stdout it will merge in the container json log at the root level and remove the `log` field.
 * `KUBERNETES_META` - Include or exclude Kubernetes metadata such as namespace and pod_name if using json log format. (default `true`)
+* `EXCLUDE_PATH` - Files matching this pattern will be ignored by the in_tail plugin, and will not be sent to Kubernetes or Sumo Logic.  This can be a comma seperated list as well.  See [in_tail](http://docs.fluentd.org/v0.12/articles/in_tail#excludepath) doc for more information.
+  * For example, setting EXCLUDE_PATH to the following would ignore all files matching /var/log/containers/*.log
+```
+...
+        env:
+        - name: EXCLUDE_PATH
+          value: "[\"/var/log/containers/*.log\"]"
+```
+ * `EXCLUDE_NAMESPACE_REGEX` - A Regex pattern for namespaces.  All matching namespaces will be excluded from Sumo Logic.  The logs will still be sent to FluentD.
+ * `EXCLUDE_POD_REGEX` - A Regex pattern for pods.  All matching pods will be excluded from Sumo Logic.  The logs will still be sent to FluentD.
+ * `EXCLUDE_CONTAINER_REGEX` - A Regex pattern for containers.  All matching containers will be excluded from Sumo Logic.  The logs will still be sent to FluentD.
+ * `EXCLUDE_HOST_REGEX` - A Regex pattern for hosts.  All matching hosts will be excluded from Sumo Logic.  The logs will still be sent to FluentD.
 
 The `LOG_FORMAT`, `SOURCE_CATEGORY` and `SOURCE_NAME` can be overridden per pod using [annotations](http://kubernetes.io/v1.0/docs/user-guide/annotations.html). For example
 
@@ -61,6 +73,36 @@ spec:
         sumologic.com/format: "text"
         sumologic.com/sourceCategory: "mywebsite/nginx"
         sumologic.com/sourceName: "mywebsite_nginx"
+    spec:
+      containers:
+      - name: nginx
+        image: nginx
+        ports:
+        - containerPort: 80
+```
+
+## Excluding via annotation
+You can also use the `sumologic.com/exclude` annotation to exclude data from Sumo Logic.  This data is still sent to FluentD, but will not make it to Sumo.
+
+```
+apiVersion: v1
+kind: ReplicationController
+metadata:
+  name: nginx
+spec:
+  replicas: 1
+  selector:
+    app: mywebsite
+  template:
+    metadata:
+      name: nginx
+      labels:
+        app: mywebsite
+      annotations:
+        sumologic.com/format: "text"
+        sumologic.com/sourceCategory: "mywebsite/nginx"
+        sumologic.com/sourceName: "mywebsite_nginx"
+        sumologic.com/exclude: "true"
     spec:
       containers:
       - name: nginx
