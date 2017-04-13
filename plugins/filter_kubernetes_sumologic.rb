@@ -16,6 +16,7 @@ module Fluent
     config_param :exclude_pod_regex, :string, :default => nil
     config_param :exclude_container_regex, :string, :default => nil
     config_param :exclude_host_regex, :string, :default => nil
+    config_param :exclude_unit_regex, :string, :default => nil
 
     def configure(conf)
       super
@@ -38,6 +39,14 @@ module Fluent
         sumo_metadata[:category] = @source_category.dup
         unless @source_category_prefix.nil?
           sumo_metadata[:category].prepend(@source_category_prefix)
+        end
+      end
+
+      if record.key?('_SYSTEMD_UNIT') and not record.fetch('_SYSTEMD_UNIT').nil?
+        unless @exclude_unit_regex.empty?
+          if Regexp.compile(@exclude_unit_regex).match(record['_SYSTEMD_UNIT'])
+            return nil
+          end
         end
       end
 

@@ -1,13 +1,18 @@
-FROM fluent/fluentd:v0.12.34
+# vim:ft=dockerfile:
+FROM fluent/fluentd:stable-debian
 WORKDIR /home/fluent
 ENV PATH /home/fluent/.gem/ruby/2.3.0/bin:$PATH
 
 USER root
+ENV SUDO_FORCE_REMOVE=yes
 
-RUN apk --no-cache --update add sudo build-base ruby-dev libffi-dev && \
-    sudo -u fluent gem install fluent-plugin-record-reformer fluent-plugin-kubernetes_metadata_filter fluent-plugin-sumologic_output && \
-    rm -rf /home/fluent/.gem/ruby/2.3.0/cache/*.gem && sudo -u fluent gem sources -c && \
-    apk del sudo build-base ruby-dev && rm -rf /var/cache/apk/*
+RUN apt-get update && \
+    apt-get install -y sudo build-essential ruby-dev libffi-dev libsystemd-dev && \
+    sudo -u fluent gem install fluent-plugin-systemd fluent-plugin-record-reformer fluent-plugin-kubernetes_metadata_filter fluent-plugin-sumologic_output && \
+    rm -rf /home/fluent/.gem/ruby/2.3.0/cache/*.gem && \
+    sudo -u fluent gem sources -c && \
+    apt-get remove --purge -y sudo build-essential ruby-dev libffi-dev libsystemd-dev && \
+    rm -rf /var/lib/apt/lists/*
 
 RUN mkdir -p /mnt/pos
 EXPOSE 24284
@@ -25,7 +30,6 @@ ENV SOURCE_CATEGORY_PREFIX "kubernetes/"
 ENV SOURCE_CATEGORY_REPLACE_DASH "/"
 ENV SOURCE_NAME "%{namespace}.%{pod}.%{container}"
 ENV KUBERNETES_META "true"
-ENV READ_FROM_HEAD "true"
 
 COPY ./conf.d/* /fluentd/conf.d/
 COPY ./etc/* /fluentd/etc/
