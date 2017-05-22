@@ -25,6 +25,7 @@ ENV SOURCE_CATEGORY_PREFIX "kubernetes/"
 ENV SOURCE_CATEGORY_REPLACE_DASH "/"
 ENV SOURCE_NAME "%{namespace}.%{pod}.%{container}"
 ENV KUBERNETES_META "true"
+ENV READ_FROM_HEAD "false"
 
 COPY ./conf.d/* /fluentd/conf.d/
 COPY ./etc/* /fluentd/etc/

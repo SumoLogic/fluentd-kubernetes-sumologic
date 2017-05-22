@@ -40,6 +40,7 @@ The following options can be configured as environment variables on the DaemonSe
   * json - Logs will appear in SumoLogic in json format.
   * json_merge - Same as json but if the container logs in json format to stdout it will merge in the container json log at the root level and remove the `log` field.
 * `KUBERNETES_META` - Include or exclude Kubernetes metadata such as namespace and pod_name if using json log format. (default `true`)
+* `READ_FROM_HEAD` - Start to read the logs from the head of file, not bottom. (default `false`). See [in_tail](http://docs.fluentd.org/v0.12/articles/in_tail#readfromhead) doc for more information.
 * `EXCLUDE_PATH` - Files matching this pattern will be ignored by the in_tail plugin, and will not be sent to Kubernetes or Sumo Logic.  This can be a comma seperated list as well.  See [in_tail](http://docs.fluentd.org/v0.12/articles/in_tail#excludepath) doc for more information.
   * For example, setting EXCLUDE_PATH to the following would ignore all files matching /var/log/containers/*.log
 ```
