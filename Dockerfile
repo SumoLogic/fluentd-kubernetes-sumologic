@@ -5,8 +5,8 @@ ENV PATH /home/fluent/.gem/ruby/2.3.0/bin:$PATH
 USER root
 
 RUN apk --no-cache --update add sudo build-base ruby-dev libffi-dev && \
-    sudo -u fluent gem install fluent-plugin-record-reformer fluent-plugin-kubernetes_metadata_filter fluent-plugin-sumologic_output && \
-    rm -rf /home/fluent/.gem/ruby/2.3.0/cache/*.gem && sudo -u fluent gem sources -c && \
+    sudo gem install fluent-plugin-record-reformer fluent-plugin-kubernetes_metadata_filter fluent-plugin-sumologic_output && \
+    rm -rf /home/fluent/.gem/ruby/2.3.0/cache/*.gem && sudo gem sources -c && \
     apk del sudo build-base ruby-dev && rm -rf /var/cache/apk/*
 
 RUN mkdir -p /mnt/pos
