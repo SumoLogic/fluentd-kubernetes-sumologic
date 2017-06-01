@@ -20,8 +20,11 @@ spec:
       - name: docker-logs
         hostPath:
           path: /var/lib/docker
+      - name: gcloud
+        secret:
+          secretName: sumologic
       containers:
-      - image: sumologic/fluentd-kubernetes-sumologic:latest
+      - image: gcr.io/driverinc-sandbox/sumologic:0.0.1-7
         name: fluentd
         imagePullPolicy: Always
         volumeMounts:
@@ -36,9 +39,27 @@ spec:
           readOnly: true
         - name: pos-files
           mountPath: /mnt/pos/
+        - name: gcloud
+          mountPath: /etc/gcloud/
+          readOnly: true
         env:
+        - name: SOURCE_CATEGORY_PREFIX
+          value: sandbox/
+        - name: SOURCE_CATEGORY
+          value: kubernetes
+        - name: LOG_FORMAT
+          value: json_merge
+        - name: SOURCE_NAME
+          value: '%{container}.%{namespace}'
         - name: COLLECTOR_URL
           valueFrom:
             secretKeyRef:
               name: sumologic
               key: collector-url
+        - name: GOOGLE_APPLICATION_CREDENTIALS
+          value: /etc/gcloud/google-application-credentials
+        - name: GCP_PROJECT_ID
+          value: driverinc-sandbox
+        - name: PUBSUB_TOPIC
+          value: fluentd-k8s
+        
