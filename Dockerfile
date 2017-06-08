@@ -1,13 +1,18 @@
-FROM fluent/fluentd:v0.12.34
+FROM fluent/fluentd:v0.14.17-debian
 WORKDIR /home/fluent
 ENV PATH /home/fluent/.gem/ruby/2.3.0/bin:$PATH
 
 USER root
 
-RUN apk --no-cache --update add sudo build-base ruby-dev libffi-dev && \
-    sudo -u fluent gem install fluent-plugin-record-reformer fluent-plugin-kubernetes_metadata_filter fluent-plugin-sumologic_output && \
-    rm -rf /home/fluent/.gem/ruby/2.3.0/cache/*.gem && sudo -u fluent gem sources -c && \
-    apk del sudo build-base ruby-dev && rm -rf /var/cache/apk/*
+# New fluent image dynamically creates user in entrypoint
+RUN [ -f /bin/entrypoint.sh ] && /bin/entrypoint.sh echo || : && \
+    apt-get update && \
+    apt-get install -y build-essential ruby-dev libffi-dev libsystemd-dev && \
+    gem install fluent-plugin-systemd fluent-plugin-record-reformer fluent-plugin-kubernetes_metadata_filter fluent-plugin-sumologic_output && \
+    rm -rf /home/fluent/.gem/ruby/2.3.0/cache/*.gem && \
+    gem sources -c && \
+    apt-get remove --purge -y build-essential ruby-dev libffi-dev libsystemd-dev && \
+    rm -rf /var/lib/apt/lists/*
 
 RUN mkdir -p /mnt/pos
 EXPOSE 24284
@@ -26,9 +31,12 @@ ENV SOURCE_CATEGORY_REPLACE_DASH "/"
 ENV SOURCE_NAME "%{namespace}.%{pod}.%{container}"
 ENV KUBERNETES_META "true"
 ENV READ_FROM_HEAD "true"
+ENV FLUENTD_SOURCE "file"
+ENV FLUENTD_USER_CONFIG_DIR "/fluentd/conf.d/user"
 
-COPY ./conf.d/* /fluentd/conf.d/
+COPY ./conf.d/ /fluentd/conf.d/
 COPY ./etc/* /fluentd/etc/
 COPY ./plugins/* /fluentd/plugins/
+COPY ./entrypoint.sh /fluentd/
 
-CMD exec fluentd -c /fluentd/etc/$FLUENTD_CONF -p /fluentd/plugins $FLUENTD_OPT
+ENTRYPOINT ["/fluentd/entrypoint.sh"]

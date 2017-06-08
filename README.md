@@ -25,10 +25,20 @@ And finally, you need to deploy the container. I will presume you have your own 
 kubectl create -f fluentd.daemonset.yaml
 ```
 
+#### Helm
+
+A helm chart can also install the daemonset, secret, etc. 
+
+```
+helm install --name sumo --set sumologic.collectorUrl=YOUR-URL-HERE stable/sumologic-fluentd
+```
+
 ## Options
 
 The following options can be configured as environment variables on the DaemonSet
 
+* `FLUENTD_SOURCE` - Fluentd can tail files or query systemd (default `file`)
+* `FLUENTD_USER_CONFIG_DIR` - A directory of user defined fluentd configuration files, which must in in `*.conf`
 * `FLUSH_INTERVAL` - How frequently to push logs to SumoLogic (default `5s`)
 * `NUM_THREADS` - Increase number of http threads to Sumo. May be required in heavy logging clusters (default `1`)
 * `SOURCE_NAME` - Set the `_sourceName` metadata field in SumoLogic. (Default `"%{namespace}.%{pod}.%{container}"`)
