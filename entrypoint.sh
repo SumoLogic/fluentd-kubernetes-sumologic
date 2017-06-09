@@ -12,9 +12,5 @@ else
     exit 1
   fi
 
-  if [ ! -z $FLUENTD_USER_CONFIG_DIR ] && [ -d $FLUENTD_USER_CONFIG_DIR ]; then
-    cp -r $FLUENTD_USER_CONFIG_DIR/* /fluentd/conf.d/user
-  fi
-
   exec fluentd -c /fluentd/etc/fluent.$FLUENTD_SOURCE.conf -p /fluentd/plugins $FLUENTD_OPT
 fi
