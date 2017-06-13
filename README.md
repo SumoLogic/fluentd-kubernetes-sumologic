@@ -66,13 +66,14 @@ The following options can be configured as environment variables on the DaemonSe
 
 The following table show which  environment variables affect fluent sources
 
-| Environment Variable | Containers | Docker | Kubernetes |
-|----------------------|------------|--------|------------|
-| `EXCLUDE_CONTAINER_REGEX` | ✔ | ✘ | ✘ |
-| `EXCLUDE_HOST_REGEX `| ✔ | ✘ | ✘ |
-| `EXCLUDE_NAMESPACE_REGEX` | ✔ | ✘ | ✔ |
-| `EXCLUDE_PATH` | ✔ | ✔ | ✔ |
-| `EXCLUDE_POD_REGEX` | ✔ | ✘ | ✘ |
+| Environment Variable | Containers | Docker | Kubernetes | Systemd |
+|----------------------|------------|--------|------------|---------|
+| `EXCLUDE_CONTAINER_REGEX` | ✔ | ✘ | ✘ | ✘ |
+| `EXCLUDE_HOST_REGEX `| ✔ | ✘ | ✘ | ✘ |
+| `EXCLUDE_NAMESPACE_REGEX` | ✔ | ✘ | ✔ | ✘ |
+| `EXCLUDE_PATH` | ✔ | ✔ | ✔ | ✘ |
+| `EXCLUDE_POD_REGEX` | ✔ | ✘ | ✘ | ✘ |
+| `EXCLUDE_UNIT_REGEX` | ✘ | ✘ | ✘ | ✔ |
 
 The `LOG_FORMAT`, `SOURCE_CATEGORY` and `SOURCE_NAME` can be overridden per pod using [annotations](http://kubernetes.io/v1.0/docs/user-guide/annotations.html). For example
 
