@@ -27,7 +27,7 @@ spec:
             path: /var/lib/docker
       containers:
         - name: fluentd
-          image: 'flywireplayground-docker.jfrog.io/fluentd-kubernetes-sumologic:0.8'
+          image: 'localhost:30001/fluentd-kubernetes-sumologic:0.9'
           env:
             - name: COLLECTOR_URL
               valueFrom:
