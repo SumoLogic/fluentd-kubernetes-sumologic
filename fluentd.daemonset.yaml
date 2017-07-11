@@ -55,8 +55,6 @@ spec:
       terminationGracePeriodSeconds: 30
       dnsPolicy: ClusterFirst
       securityContext: {}
-      imagePullSecrets:
-        - name: docker-artifactory-credential-secret
       schedulerName: default-scheduler
   updateStrategy:
     type: OnDelete
