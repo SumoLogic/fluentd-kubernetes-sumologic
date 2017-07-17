@@ -53,6 +53,14 @@ The following options can be configured as environment variables on the DaemonSe
  * `EXCLUDE_POD_REGEX` - A Regex pattern for pods.  All matching pods will be excluded from Sumo Logic.  The logs will still be sent to FluentD.
  * `EXCLUDE_CONTAINER_REGEX` - A Regex pattern for containers.  All matching containers will be excluded from Sumo Logic.  The logs will still be sent to FluentD.
  * `EXCLUDE_HOST_REGEX` - A Regex pattern for hosts.  All matching hosts will be excluded from Sumo Logic.  The logs will still be sent to FluentD.
+ * `EXCLUDE_CONFIG_PATH` - Path to a YAML config file to use in lieu of `EXCLUDE_NAMESPACE_REGEX`, `EXCLUDE_POD_REGEX`, `EXCLUDE_CONTAINER_REGEX`, `EXCLUDE_HOST_REGEX`. The specified file is monitored for changes and the values are reloaded upon change. The expected format is:
+ ```
+exclude_namespace_regex: "some regex"
+exclude_pod_regex: "some regex"
+exclude_container_regex: "some regex"
+exclude_host_regex: "some regex"
+ ```
+
 
 The following table show which  environment variables affect fluent sources
 
