@@ -63,15 +63,20 @@ The following options can be configured as environment variables on the DaemonSe
  * `EXCLUDE_POD_REGEX` - A Regex pattern for pods.  All matching pods will be excluded from Sumo Logic.  The logs will still be sent to FluentD.
  * `EXCLUDE_CONTAINER_REGEX` - A Regex pattern for containers.  All matching containers will be excluded from Sumo Logic.  The logs will still be sent to FluentD.
  * `EXCLUDE_HOST_REGEX` - A Regex pattern for hosts.  All matching hosts will be excluded from Sumo Logic.  The logs will still be sent to FluentD.
+ * `EXCLUDE_FACILITY_REGEX` - A Regex pattern for syslog [faclilities](https://en.wikipedia.org/wiki/Syslog#Facility).  All matching facilities will be excluded from Sumo Logic.  The logs will still be sent to FluentD.
+ * `EXCLUDE_PRIORITY_REGEX` - A Regex pattern for syslog [priorities](https://en.wikipedia.org/wiki/Syslog#Severity_level).  All matching priorities will be excluded from Sumo Logic.  The logs will still be sent to FluentD.
+ * `EXCLUDE_UNIT_REGEX` - A Regex pattern for systemd [units](https://www.freedesktop.org/software/systemd/man/systemd.unit.html).  All matching units will be excluded from Sumo Logic.  The logs will still be sent to FluentD.
 
 The following table show which  environment variables affect fluent sources
 
 | Environment Variable | Containers | Docker | Kubernetes | Systemd |
 |----------------------|------------|--------|------------|---------|
 | `EXCLUDE_CONTAINER_REGEX` | ✔ | ✘ | ✘ | ✘ |
-| `EXCLUDE_HOST_REGEX `| ✔ | ✘ | ✘ | ✘ |
+| `EXCLUDE_FACILITY_REGEX` | ✘ | ✘ | ✘ | ✔ |
+| `EXCLUDE_HOST_REGEX `| ✔ | ✘ | ✘ | ✔ |
 | `EXCLUDE_NAMESPACE_REGEX` | ✔ | ✘ | ✔ | ✘ |
 | `EXCLUDE_PATH` | ✔ | ✔ | ✔ | ✘ |
+| `EXCLUDE_PRIORITY_REGEX` | ✘ | ✘ | ✘ | ✔ |
 | `EXCLUDE_POD_REGEX` | ✔ | ✘ | ✘ | ✘ |
 | `EXCLUDE_UNIT_REGEX` | ✘ | ✘ | ✘ | ✔ |
 
