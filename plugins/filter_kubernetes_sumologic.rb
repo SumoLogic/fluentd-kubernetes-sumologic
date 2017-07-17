@@ -16,9 +16,53 @@ module Fluent
     config_param :exclude_pod_regex, :string, :default => nil
     config_param :exclude_container_regex, :string, :default => nil
     config_param :exclude_host_regex, :string, :default => nil
+    config_param :exclude_config_path, :string, :default => nil
 
     def configure(conf)
       super
+      load_exclude_config() unless @exclude_config_path.nil? || @exclude_config_path.empty?
+    end
+
+    def load_exclude_config()
+      $log.info "attempting to load exclude config at #{@exclude_config_path}"
+
+      if not File.file? @exclude_config_path
+        $log.info "could not load exclude config, file does not exist"
+        return
+      end
+
+      conf = YAML.load_file(@exclude_config_path)
+      return if not conf 
+      $log.info "parsed exclude config: #{conf}"
+
+      @exclude_namespace_regex = conf['exclude_namespace_regex'] if conf.has_key? 'exclude_namespace_regex'
+      @exclude_pod_regex = conf['exclude_pod_regex'] if conf.has_key? 'exclude_pod_regex'
+      @exclude_container_regex = conf['exclude_container_regex'] if conf.has_key? 'exclude_container_regex'
+      @exclude_host_regex = conf['exclude_host_regex'] if conf.has_key? 'exclude_host_regex'
+    rescue 
+      @log.error $!.to_s
+      @log.error_backtrace
+    end
+
+    def start 
+      return if @exclude_config_path.nil? || @exclude_config_path.empty?
+      
+      @loop = Coolio::Loop.new
+      @conf_trigger = ConfigWatcher.new(@exclude_config_path, log, &method(:load_exclude_config))
+      @conf_trigger.attach(@loop)
+      @thread = Thread.new(&method(:run))
+    end
+
+    def shutdown
+      @conf_trigger.detach if @conf_trigger && @conf_trigger.attached?
+      @loop.stop rescue nil unless @loop.nil?
+    end
+
+    def run
+      @loop.run
+    rescue
+      log.error "unexpected error", error: $!.to_s
+      log.error_backtrace
     end
 
     def is_number?(string)
@@ -119,5 +163,22 @@ module Fluent
       end
       record
     end
+
+    class ConfigWatcher < Coolio::StatWatcher
+      def initialize(path, log, &callback)
+        @callback = callback
+        @log = log
+        super(path)
+      end
+    
+      def on_change(prev, cur)
+        @log.info "config file change detected"
+        @callback.call
+      rescue
+          @log.error $!.to_s
+          @log.error_backtrace
+      end
+    end
+
   end
 end
