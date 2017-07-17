@@ -48,7 +48,7 @@ module Fluent
       return if @exclude_config_path.nil? || @exclude_config_path.empty?
       
       @loop = Coolio::Loop.new
-      @conf_trigger = ConfigWatcher.new(@exclude_config_path, log, &method(:load_exclude_config))
+      @conf_trigger = ConfigWatcher.new(File.dirname(@exclude_config_path), log, &method(:load_exclude_config))
       @conf_trigger.attach(@loop)
       @thread = Thread.new(&method(:run))
     end
