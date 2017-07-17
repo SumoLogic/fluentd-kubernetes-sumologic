@@ -35,10 +35,11 @@ module Fluent
       return if not conf 
       $log.info "parsed exclude config: #{conf}"
 
-      @exclude_namespace_regex = conf['exclude_namespace_regex'] if conf.has_key? 'exclude_namespace_regex'
-      @exclude_pod_regex = conf['exclude_pod_regex'] if conf.has_key? 'exclude_pod_regex'
-      @exclude_container_regex = conf['exclude_container_regex'] if conf.has_key? 'exclude_container_regex'
-      @exclude_host_regex = conf['exclude_host_regex'] if conf.has_key? 'exclude_host_regex'
+      @exclude_namespace_regex = conf['exclude_namespace_regex'] || ""
+      @exclude_pod_regex = conf['exclude_pod_regex'] || ""
+      @exclude_container_regex = conf['exclude_container_regex'] || ""
+      @exclude_host_regex = conf['exclude_host_regex'] || ""
+
     rescue 
       @log.error $!.to_s
       @log.error_backtrace
