@@ -65,7 +65,7 @@ module Fluent
         end
 
         unless @exclude_host_regex.empty?
-          if Regexp.compile(@exclude_hostregex).match(record['_HOSTNAME'])
+          if Regexp.compile(@exclude_host_regex).match(record['_HOSTNAME'])
             return nil
           end
         end
