@@ -25,10 +25,20 @@ And finally, you need to deploy the container. I will presume you have your own 
 kubectl create -f fluentd.daemonset.yaml
 ```
 
+#### Helm
+
+A helm chart can also install the daemonset, secret, etc. 
+
+```
+helm install --name sumo --set sumologic.collectorUrl=YOUR-URL-HERE stable/sumologic-fluentd
+```
+
 ## Options
 
 The following options can be configured as environment variables on the DaemonSet
 
+* `FLUENTD_SOURCE` - Fluentd can tail files or query systemd (default `file`)
+* `FLUENTD_USER_CONFIG_DIR` - A directory of user defined fluentd configuration files, which must in in `*.conf`
 * `FLUSH_INTERVAL` - How frequently to push logs to SumoLogic (default `5s`)
 * `NUM_THREADS` - Increase number of http threads to Sumo. May be required in heavy logging clusters (default `1`)
 * `SOURCE_NAME` - Set the `_sourceName` metadata field in SumoLogic. (Default `"%{namespace}.%{pod}.%{container}"`)
@@ -53,16 +63,22 @@ The following options can be configured as environment variables on the DaemonSe
  * `EXCLUDE_POD_REGEX` - A Regex pattern for pods.  All matching pods will be excluded from Sumo Logic.  The logs will still be sent to FluentD.
  * `EXCLUDE_CONTAINER_REGEX` - A Regex pattern for containers.  All matching containers will be excluded from Sumo Logic.  The logs will still be sent to FluentD.
  * `EXCLUDE_HOST_REGEX` - A Regex pattern for hosts.  All matching hosts will be excluded from Sumo Logic.  The logs will still be sent to FluentD.
+ * `EXCLUDE_FACILITY_REGEX` - A Regex pattern for syslog [faclilities](https://en.wikipedia.org/wiki/Syslog#Facility).  All matching facilities will be excluded from Sumo Logic.  The logs will still be sent to FluentD.
+ * `EXCLUDE_PRIORITY_REGEX` - A Regex pattern for syslog [priorities](https://en.wikipedia.org/wiki/Syslog#Severity_level).  All matching priorities will be excluded from Sumo Logic.  The logs will still be sent to FluentD.
+ * `EXCLUDE_UNIT_REGEX` - A Regex pattern for systemd [units](https://www.freedesktop.org/software/systemd/man/systemd.unit.html).  All matching units will be excluded from Sumo Logic.  The logs will still be sent to FluentD.
 
 The following table show which  environment variables affect fluent sources
 
-| Environment Variable | Containers | Docker | Kubernetes |
-|----------------------|------------|--------|------------|
-| `EXCLUDE_CONTAINER_REGEX` | ✔ | ✘ | ✘ |
-| `EXCLUDE_HOST_REGEX `| ✔ | ✘ | ✘ |
-| `EXCLUDE_NAMESPACE_REGEX` | ✔ | ✘ | ✔ |
-| `EXCLUDE_PATH` | ✔ | ✔ | ✔ |
-| `EXCLUDE_POD_REGEX` | ✔ | ✘ | ✘ |
+| Environment Variable | Containers | Docker | Kubernetes | Systemd |
+|----------------------|------------|--------|------------|---------|
+| `EXCLUDE_CONTAINER_REGEX` | ✔ | ✘ | ✘ | ✘ |
+| `EXCLUDE_FACILITY_REGEX` | ✘ | ✘ | ✘ | ✔ |
+| `EXCLUDE_HOST_REGEX `| ✔ | ✘ | ✘ | ✔ |
+| `EXCLUDE_NAMESPACE_REGEX` | ✔ | ✘ | ✔ | ✘ |
+| `EXCLUDE_PATH` | ✔ | ✔ | ✔ | ✘ |
+| `EXCLUDE_PRIORITY_REGEX` | ✘ | ✘ | ✘ | ✔ |
+| `EXCLUDE_POD_REGEX` | ✔ | ✘ | ✘ | ✘ |
+| `EXCLUDE_UNIT_REGEX` | ✘ | ✘ | ✘ | ✔ |
 
 The `LOG_FORMAT`, `SOURCE_CATEGORY` and `SOURCE_NAME` can be overridden per pod using [annotations](http://kubernetes.io/v1.0/docs/user-guide/annotations.html). For example
 
