@@ -13,13 +13,13 @@ module Fluent
     config_param :log_format, :string, :default => 'json'
     config_param :source_host, :string, :default => nil
 
-    config_param :exclude_container_regex, :string, :default => nil
-    config_param :exclude_facility_regex, :string, :default => nil
-    config_param :exclude_host_regex, :string, :default => nil
-    config_param :exclude_namespace_regex, :string, :default => nil
-    config_param :exclude_pod_regex, :string, :default => nil
-    config_param :exclude_priority_regex, :string, :default => nil
-    config_param :exclude_unit_regex, :string, :default => nil
+    config_param :exclude_container_regex, :string, :default => ''
+    config_param :exclude_facility_regex, :string, :default => ''
+    config_param :exclude_host_regex, :string, :default => ''
+    config_param :exclude_namespace_regex, :string, :default => ''
+    config_param :exclude_pod_regex, :string, :default => ''
+    config_param :exclude_priority_regex, :string, :default => ''
+    config_param :exclude_unit_regex, :string, :default => ''
 
     def configure(conf)
       super
