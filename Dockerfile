@@ -8,7 +8,7 @@ USER root
 RUN [ -f /bin/entrypoint.sh ] && /bin/entrypoint.sh echo || : && \
     apt-get update && \
     apt-get install -y build-essential ruby-dev libffi-dev libsystemd-dev && \
-    gem install fluent-plugin-systemd fluent-plugin-record-reformer fluent-plugin-kubernetes_metadata_filter fluent-plugin-sumologic_output && \
+    gem install fluent-plugin-systemd fluent-plugin-record-reformer fluent-plugin-kubernetes_metadata_filter fluent-plugin-sumologic_output fluent-plugin-concat && \
     rm -rf /home/fluent/.gem/ruby/2.3.0/cache/*.gem && \
     gem sources -c && \
     apt-get remove --purge -y build-essential ruby-dev libffi-dev libsystemd-dev && \
@@ -33,6 +33,8 @@ ENV KUBERNETES_META "true"
 ENV READ_FROM_HEAD "true"
 ENV FLUENTD_SOURCE "file"
 ENV FLUENTD_USER_CONFIG_DIR "/fluentd/conf.d/user"
+ENV MULTILINE_START_REGEXP "/^\w{3} \d{1,2}, \d{4}/"
+ENV CONCAT_SEPARATOR ""
 
 COPY ./conf.d/ /fluentd/conf.d/
 COPY ./etc/* /fluentd/etc/

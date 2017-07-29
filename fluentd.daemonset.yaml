@@ -1,15 +1,15 @@
 apiVersion: extensions/v1beta1
 kind: DaemonSet
 metadata:
-  name: fluentd
+  name: fluentd-sumologic
   labels:
-    app: fluentd
+    app: fluentd-sumologic
     version: v1
 spec:
   template:
     metadata:
       labels:
-        name: fluentd
+        name: fluentd-sumologic
     spec:
       volumes:
       - name: pos-files

@@ -27,7 +27,7 @@ kubectl create -f fluentd.daemonset.yaml
 
 #### Helm
 
-A helm chart can also install the daemonset, secret, etc. 
+A helm chart can also install the daemonset, secret, etc.
 
 ```
 helm install --name sumo --set sumologic.collectorUrl=YOUR-URL-HERE stable/sumologic-fluentd
@@ -51,6 +51,8 @@ The following options can be configured as environment variables on the DaemonSe
   * json_merge - Same as json but if the container logs in json format to stdout it will merge in the container json log at the root level and remove the `log` field.
 * `KUBERNETES_META` - Include or exclude Kubernetes metadata such as namespace and pod_name if using json log format. (default `true`)
 * `READ_FROM_HEAD` - Start to read the logs from the head of file, not bottom. Only applies to containers log files. (default `true`). See [in_tail](http://docs.fluentd.org/v0.12/articles/in_tail#readfromhead) doc for more information.
+* `MULTILINE_START_REGEXP` - Regex to tell the `concat` plugin to use when merging multi-line messages. Defaults to Julian dates (e.g. Jul 29, 2017...)
+* `CONCAT_SEPARATOR` - The character to use to delimit lines within the final concat'd message. This defaults to "" since most multi-line messages contain a newline at the end of each line.
 * `EXCLUDE_PATH` - Files matching this pattern will be ignored by the in_tail plugin, and will not be sent to Kubernetes or Sumo Logic.  This can be a comma seperated list as well.  See [in_tail](http://docs.fluentd.org/v0.12/articles/in_tail#excludepath) doc for more information.
   * For example, setting EXCLUDE_PATH to the following would ignore all files matching /var/log/containers/*.log
 ```
