@@ -11,7 +11,7 @@ module Fluent
     config_param :source_category_prefix, :string, :default => 'kubernetes/'
     config_param :source_name, :string, :default => '%{namespace}.%{pod}.%{container}'
     config_param :log_format, :string, :default => 'json'
-    config_param :source_host, :string, :default => nil
+    config_param :source_host, :string, :default => ''
 
     config_param :exclude_container_regex, :string, :default => ''
     config_param :exclude_facility_regex, :string, :default => ''
@@ -123,7 +123,12 @@ module Fluent
         end
 
         sumo_metadata[:log_format] = annotations['sumologic.com/format'] if annotations['sumologic.com/format']
-        sumo_metadata[:host] = k8s_metadata[:source_host] if k8s_metadata[:source_host]
+
+        if annotations['sumologic.com/sourceHost'].nil?
+          sumo_metadata[:host] = sumo_metadata[:host] % k8s_metadata
+        else
+          sumo_metadata[:host] = annotations['sumologic.com/sourceHost'] % k8s_metadata
+        end
 
         if annotations['sumologic.com/sourceName'].nil?
           sumo_metadata[:source] = sumo_metadata[:source] % k8s_metadata
