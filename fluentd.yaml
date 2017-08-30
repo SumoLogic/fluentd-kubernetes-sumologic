@@ -35,6 +35,7 @@ subjects:
   namespace: default
 
 --- 
+apiVersion: extensions/v1beta1
 kind: DaemonSet
 metadata:
   name: fluentd-sumologic
