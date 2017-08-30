@@ -1,4 +1,40 @@
-apiVersion: extensions/v1beta1
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: fluentd
+
+---
+apiVersion: rbac.authorization.k8s.io/v1beta1
+kind: ClusterRole
+metadata:
+  name: fluentd
+rules:
+- apiGroups:
+  - ""
+  resources:
+  - pods
+  verbs:
+  - get
+  - list
+  - watch
+
+---
+kind: ClusterRoleBinding
+apiVersion: rbac.authorization.k8s.io/v1beta1
+metadata:
+  name: fluentd
+roleRef:
+  kind: ClusterRole
+  name: fluentd
+  apiGroup: rbac.authorization.k8s.io
+subjects:
+- kind: ServiceAccount
+  name: fluentd
+  # This namespace setting will limit fluentd to watching/listing/getting pods in the default namespace. If you want it to be able to log your kube-system namespace as well, comment the line out.
+  namespace: default
+
+--- 
 kind: DaemonSet
 metadata:
   name: fluentd-sumologic
@@ -11,6 +47,7 @@ spec:
       labels:
         name: fluentd-sumologic
     spec:
+      serviceAccountName: fluentd
       volumes:
       - name: pos-files
         emptyDir: {}
