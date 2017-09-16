@@ -1,0 +1,44 @@
+apiVersion: extensions/v1beta1
+kind: DaemonSet
+metadata:
+  name: fluentd-sumologic
+  labels:
+    app: fluentd-sumologic
+    version: v1
+spec:
+  template:
+    metadata:
+      labels:
+        name: fluentd-sumologic
+    spec:
+      volumes:
+      - name: pos-files
+        emptyDir: {}
+      - name: host-logs
+        hostPath:
+          path: /var/log/
+      - name: docker-logs
+        hostPath:
+          path: /var/lib/docker
+      containers:
+      - image: sumologic/fluentd-kubernetes-sumologic:latest
+        name: fluentd
+        imagePullPolicy: Always
+        volumeMounts:
+        - name: host-logs
+          mountPath: /mnt/log/
+          readOnly: true
+        - name: host-logs
+          mountPath: /var/log/
+          readOnly: true
+        - name: docker-logs
+          mountPath: /var/lib/docker/
+          readOnly: true
+        - name: pos-files
+          mountPath: /mnt/pos/
+        env:
+        - name: COLLECTOR_URL
+          valueFrom:
+            secretKeyRef:
+              name: sumologic
+              key: collector-url

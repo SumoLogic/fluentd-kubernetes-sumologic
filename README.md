@@ -19,10 +19,18 @@ Save the collector url (created above) as a secret in Kubernetes.
 kubectl create secret generic sumologic --from-literal=collector-url=<INSERT_HTTP_URL>
 ```
 
-And finally, you need to deploy the container. I will presume you have your own CI/CD setup. See the sample Kubernetes DaemonSet and Role in [fluentd.yaml](fluentd.yaml)
+And finally, you need to deploy the container. I will presume you have your own CI/CD setup. See the sample Kubernetes DaemonSet and Role in [fluentd.yaml](/daemonset/rbac/fluentd.yaml)
 
+Which yaml file you should use depends on whether or not you are running [RBAC](https://kubernetes.io/docs/admin/authorization/rbac/) for authorization. RBAC is enabled by default as of Kubernetes 1.6.
+
+#### Non-RBAC (Kubernetes 1.5 and below)
 ```
-kubectl create -f fluentd.yaml
+kubectl create -f /daemonset/nonrbac/fluentd.yaml
+```
+
+#### RBAC (Kubernetes 1.6 and above)
+```
+kubectl create -f /daemonset/rbac/fluentd.yaml
 ```
 
 #### Helm
