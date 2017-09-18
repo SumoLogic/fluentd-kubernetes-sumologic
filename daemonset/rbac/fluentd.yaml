@@ -1,0 +1,82 @@
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: fluentd
+
+---
+apiVersion: rbac.authorization.k8s.io/v1beta1
+kind: ClusterRole
+metadata:
+  name: fluentd
+rules:
+- apiGroups:
+  - ""
+  resources:
+  - pods
+  verbs:
+  - get
+  - list
+  - watch
+
+---
+kind: ClusterRoleBinding
+apiVersion: rbac.authorization.k8s.io/v1beta1
+metadata:
+  name: fluentd
+roleRef:
+  kind: ClusterRole
+  name: fluentd
+  apiGroup: rbac.authorization.k8s.io
+subjects:
+- kind: ServiceAccount
+  name: fluentd
+  # This namespace setting will limit fluentd to watching/listing/getting pods in the default namespace. If you want it to be able to log your kube-system namespace as well, comment the line out.
+  namespace: default
+
+--- 
+apiVersion: extensions/v1beta1
+kind: DaemonSet
+metadata:
+  name: fluentd-sumologic
+  labels:
+    app: fluentd-sumologic
+    version: v1
+spec:
+  template:
+    metadata:
+      labels:
+        name: fluentd-sumologic
+    spec:
+      serviceAccountName: fluentd
+      volumes:
+      - name: pos-files
+        emptyDir: {}
+      - name: host-logs
+        hostPath:
+          path: /var/log/
+      - name: docker-logs
+        hostPath:
+          path: /var/lib/docker
+      containers:
+      - image: sumologic/fluentd-kubernetes-sumologic:latest
+        name: fluentd
+        imagePullPolicy: Always
+        volumeMounts:
+        - name: host-logs
+          mountPath: /mnt/log/
+          readOnly: true
+        - name: host-logs
+          mountPath: /var/log/
+          readOnly: true
+        - name: docker-logs
+          mountPath: /var/lib/docker/
+          readOnly: true
+        - name: pos-files
+          mountPath: /mnt/pos/
+        env:
+        - name: COLLECTOR_URL
+          valueFrom:
+            secretKeyRef:
+              name: sumologic
+              key: collector-url
