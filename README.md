@@ -1,83 +1,105 @@
-# fluentd-Kubernetes-sumologic, a container to ship logs to [SumoLogic](http://www.sumologic.com)
+- [Step 1  Create hosted collector and HTTP source in Sumo](#step-1--create-hosted-collector-and-http-source-in-sumo)
+- [Step 2  Create a Kubernetes secret](#step-2--create-a-kubernetes-secret)
+- [Step 3  Install the Sumo Kubernetes FluentD plugin](#step-3--install-the-sumo-kubernetes-fluentd-plugin)
+  * [Option A  Install plugin using kubectl](#option-a--install-plugin-using-kubectl)
+  * [Option B  Helm chart](#option-b--helm-chart)
+- [Environment variables](#environment-variables)
+    + [Override environment variables using annotations](#override-environment-variables-using-annotations)
+    + [Exclude data using annotations](#exclude-data-using-annotations)
+- [Step 3 Set up Heapster for metric collection](#step-3-set-up-heapster-for-metric-collection)
+  * [Kubernetes ConfigMap](#kubernetes-configmap)
+  * [Kubernetes Service](#kubernetes-service)
+  * [Kubernetes Deployment](#kubernetes-deployment)
+- [Log data](#log-data)
+  * [Docker](#docker)
+  * [Kubelet](#kubelet)
+  * [Containers](#containers)
 
-This is a [fluentd](http://www.fluentd.org/) container, designed to run as a Kubernetes [DaemonSet](http://kubernetes.io/docs/admin/daemons/). It will run an instance of this container on each physical underlying host in the cluster. The goal is to pull all the kubelet, docker daemon and container logs from the host then to ship them off to [SumoLogic](https://www.sumologic.com/) in json or text format.
 
-## Setup
-### SumoLogic
-First things first, you need a HTTP collector in SumoLogic that the container can send logs to via HTTP.
 
-In Sumo, `Manage -> Collection -> Add Collector -> Hosted Collector`
+This page describes the Sumo Kubernetes [Fluentd](http://www.fluentd.org/) plugin.
 
-Then you need to add a source to that collector, which would be a new `HTTP source`. This will give you a unique URL that can receive logs.
+The plugin runs as a Kubernetes [DaemonSet](http://kubernetes.io/docs/admin/daemons/); it runs an instance of the plugin on each physical host in a cluster. Each plugin instance pulls system, kubelet, docker daemon, and container logs from the host and sends them, in JSON or text format, to an HTTP endpoint on a hosted collector in the [Sumo](http://www.sumologic.com) service.
 
-More details here: http://help.sumologic.com/Send_Data/Sources/HTTP_Source
+![deployment](https://github.com/SumoLogic/fluentd-kubernetes-sumologic/blob/master/screenshots/kubernetes.png)
 
-### Kubernetes
-Save the collector url (created above) as a secret in Kubernetes.
+# Step 1  Create hosted collector and HTTP source in Sumo
 
-```
-kubectl create secret generic sumologic --from-literal=collector-url=<INSERT_HTTP_URL>
-```
+In this step you create, on the Sumo service, an HTTP endpoint to receive your logs. This process involves creating an HTTP source on a hosted collector in Sumo. In Sumo, collectors use sources to receive data.
 
-And finally, you need to deploy the container. I will presume you have your own CI/CD setup. See the sample Kubernetes DaemonSet and Role in [fluentd.yaml](/daemonset/rbac/fluentd.yaml)
+1. If you don’t already have a Sumo account, you can create one by clicking the **Free Trial** button on https://www.sumologic.com/.
+2. Create a hosted collector, following the instructions on [Configure a Hosted Collector](https://help.sumologic.com/Send-Data/Hosted-Collectors/Configure-a-Hosted-Collector) in Sumo help. (If you already have a Sumo hosted collector that you want to use, skip this step.)  
+3. Create an HTTP source on the collector you created in the previous step. For instructions, see [HTTP Logs and Metrics Source](https://help.sumologic.com/Send-Data/Sources/02Sources-for-Hosted-Collectors/HTTP-Source) in Sumo help. 
+4. When you have configured the HTTP source, Sumo will display the URL of the HTTP endpoint. Make a note of the URL. You will use it when you configure the Kubernetes service to send data to Sumo. 
 
-Which yaml file you should use depends on whether or not you are running [RBAC](https://kubernetes.io/docs/admin/authorization/rbac/) for authorization. RBAC is enabled by default as of Kubernetes 1.6.
+# Step 2  Create a Kubernetes secret
 
-#### Non-RBAC (Kubernetes 1.5 and below)
-```
-kubectl create -f /daemonset/nonrbac/fluentd.yaml
-```
+Create a secret in Kubernetes with the HTTP source URL. If you want to change the secret name, you must modify the Kubernetes manifest accordingly.
 
-#### RBAC (Kubernetes 1.6 and above)
-```
-kubectl create -f /daemonset/rbac/fluentd.yaml
-```
+`kubectl create secret generic sumologic --from-literal=collector-url=INSERT_HTTP_URL`
 
-#### Helm
+You should see the confirmation message 
 
-A helm chart can also install the daemonset, secret, etc.
+`secret "sumologic" created.`
 
-```
-helm install --name sumo --set sumologic.collectorUrl=YOUR-URL-HERE stable/sumologic-fluentd
-```
+# Step 3  Install the Sumo Kubernetes FluentD plugin
 
-## Options
+Follow the instructions in Option A below to install the plugin using `kubectl`. If you prefer to use a Helm chart, see Option B. 
 
-The following options can be configured as environment variables on the DaemonSet
+Before you start, see [Environment variables](#environment-variables) for information about settings you can customize, and how to use annotations to override selected environment variables and exclude data from being sent to Sumo.
 
-* `FLUENTD_SOURCE` - Fluentd can tail files or query systemd (default `file`)
-* `FLUENTD_USER_CONFIG_DIR` - A directory of user defined fluentd configuration files, which must in in `*.conf`
-* `FLUSH_INTERVAL` - How frequently to push logs to SumoLogic (default `5s`)
-* `NUM_THREADS` - Increase number of http threads to Sumo. May be required in heavy logging clusters (default `1`)
-* `SOURCE_NAME` - Set the `_sourceName` metadata field in SumoLogic. (Default `"%{namespace}.%{pod}.%{container}"`)
-* `SOURCE_CATEGORY` - Set the `__sourceCategory` metadata field in SumoLogic. (Default `"%{namespace}/%{pod_name}"`)
-* `SOURCE_CATEGORY_REPLACE_DASH` - Used to replace `-` with another character. (default `/`).
-  * For example a Pod called `travel-nginx-3629474229-dirmo` within namespace `app` will show in SumoLogic with `_sourceCategory=app/travel/nginx`
-* `LOG_FORMAT` - Format to post logs into Sumo. `json` or `text` (default `json`)
-  * text - Logs will appear in SumoLogic in text format
-  * json - Logs will appear in SumoLogic in json format.
-  * json_merge - Same as json but if the container logs in json format to stdout it will merge in the container json log at the root level and remove the `log` field.
-* `KUBERNETES_META` - Include or exclude Kubernetes metadata such as namespace and pod_name if using json log format. (default `true`)
-* `READ_FROM_HEAD` - Start to read the logs from the head of file, not bottom. Only applies to containers log files. (default `true`). See [in_tail](http://docs.fluentd.org/v0.12/articles/in_tail#readfromhead) doc for more information.
-* `MULTILINE_START_REGEXP` - Regex to tell the `concat` plugin to use when merging multi-line messages. Defaults to Julian dates (e.g. Jul 29, 2017...)
-* `CONCAT_SEPARATOR` - The character to use to delimit lines within the final concat'd message. This defaults to "" since most multi-line messages contain a newline at the end of each line.
-* `EXCLUDE_PATH` - Files matching this pattern will be ignored by the in_tail plugin, and will not be sent to Kubernetes or Sumo Logic.  This can be a comma seperated list as well.  See [in_tail](http://docs.fluentd.org/v0.12/articles/in_tail#excludepath) doc for more information.
-  * For example, setting EXCLUDE_PATH to the following would ignore all files matching /var/log/containers/*.log
-```
-...
-        env:
-        - name: EXCLUDE_PATH
-          value: "[\"/var/log/containers/*.log\"]"
-```
- * `EXCLUDE_NAMESPACE_REGEX` - A Regex pattern for namespaces.  All matching namespaces will be excluded from Sumo Logic.  The logs will still be sent to FluentD.
- * `EXCLUDE_POD_REGEX` - A Regex pattern for pods.  All matching pods will be excluded from Sumo Logic.  The logs will still be sent to FluentD.
- * `EXCLUDE_CONTAINER_REGEX` - A Regex pattern for containers.  All matching containers will be excluded from Sumo Logic.  The logs will still be sent to FluentD.
- * `EXCLUDE_HOST_REGEX` - A Regex pattern for hosts.  All matching hosts will be excluded from Sumo Logic.  The logs will still be sent to FluentD.
- * `EXCLUDE_FACILITY_REGEX` - A Regex pattern for syslog [faclilities](https://en.wikipedia.org/wiki/Syslog#Facility).  All matching facilities will be excluded from Sumo Logic.  The logs will still be sent to FluentD.
- * `EXCLUDE_PRIORITY_REGEX` - A Regex pattern for syslog [priorities](https://en.wikipedia.org/wiki/Syslog#Severity_level).  All matching priorities will be excluded from Sumo Logic.  The logs will still be sent to FluentD.
- * `EXCLUDE_UNIT_REGEX` - A Regex pattern for systemd [units](https://www.freedesktop.org/software/systemd/man/systemd.unit.html).  All matching units will be excluded from Sumo Logic.  The logs will still be sent to FluentD.
+## Option A  Install plugin using kubectl
 
-The following table show which  environment variables affect fluent sources
+See the sample Kubernetes DaemonSet and Role in [fluentd.yaml](/daemonset/rbac/fluentd.yaml).
+
+1. Clone the [GitHub repo](https://github.com/SumoLogic/fluentd-kubernetes-sumologic).
+
+2. In `fluentd-kubernetes-sumologic`, install the chart using `kubectl`.
+
+Which `.yaml` file you should use depends on whether or not you are running RBAC for authorization. RBAC is enabled by default as of Kubernetes 1.6.
+
+**Non-RBAC (Kubernetes 1.5 and below)** 
+
+`kubectl create -f /daemonset/nonrbac/fluentd.yaml` 
+
+**RBAC (Kubernetes 1.6 and above)** <br/><br/>`kubectl create -f /daemonset/rbac/fluentd.yaml`
+
+
+**Note** if you modified the command in Step 2 to use a different name, update the `.yaml` file to use the correct secret.
+
+Logs should begin flowing into Sumo within a few minutes of plugin installation.
+
+## Option B  Helm chart
+If you use Helm to manage your Kubernetes resources, there is a Helm chart for the plugin at https://github.com/kubernetes/charts/tree/master/stable/sumologic-fluentd.
+
+# Environment variables
+
+Environment | Variable Description
+----------- | --------------------
+`CONCAT_SEPARATOR` |The character to use to delimit lines within the final concatenated message. Most multi-line messages contain a newline at the end of each line. <br/><br/> Default: ""
+`EXCLUDE_CONTAINER_REGEX` |A regular expression for containers. Matching containers will be excluded from Sumo. The logs will still be sent to FluentD.
+`EXCLUDE_FACILITY_REGEX`|A regular expression for syslog [facilities](https://en.wikipedia.org/wiki/Syslog#Facility). Matching facilities will be excluded from Sumo. The logs will still be sent to FluentD.
+`EXCLUDE_HOST_REGEX`|A regular expression for hosts. Matching hosts will be excluded from Sumo. The logs will still be sent to FluentD.
+`EXCLUDE_NAMESPACE_REGEX`|A regular expression for `namespaces`. Matching `namespaces` will be excluded from Sumo. The logs will still be sent to FluentD.
+`EXCLUDE_PATH`|Files matching this pattern will be ignored by the `in_tail` plugin, and will not be sent to Kubernetes or Sumo. This can be a comma-separated list as well. See [in_tail](http://docs.fluentd.org/v0.12/articles/in_tail#excludepath) documentation for more information. <br/><br/> For example, defining `EXCLUDE_PATH` as shown below excludes all files matching `/var/log/containers/*.log`, <br/><br/>`...`<br/><br/>`env:`<br/>   - `name: EXCLUDE_PATH`<br/>         `value: "[\"/var/log/containers/*.log\"]"`
+`EXCLUDE_POD_REGEX`|A regular expression for pods. Matching pods will be excluded from Sumo. The logs will still be sent to FluentD.
+`EXCLUDE_PRIORITY_REGEX`|A regular expression for syslog [priorities](https://en.wikipedia.org/wiki/Syslog#Severity_level). Matching priorities will be excluded from Sumo. The logs will still be sent to FluentD.
+`EXCLUDE_UNIT_REGEX` |A regular expression for `systemd` units. Matching units will be excluded from Sumo. The logs will still be sent to FluentD.
+`FLUENTD_SOURCE`|Fluentd can tail files or query `systemd`. Allowable values: `file`, `Systemd`. <br/><br/>Default: `file` 
+`FLUENTD_USER_CONFIG_DIR`|A directory of user-defined fluentd configuration files, which must be in the  `*.conf` directory in the container.
+`FLUSH_INTERVAL` |How frequently to push logs to Sumo.<br/><br/>Default: `5s`
+`KUBERNETES_META`|Include or exclude Kubernetes metadata such as `namespace` and `pod_name` if using JSON log format. <br/><br/>Default: `true`
+`LOG_FORMAT`|Format in which to post logs to Sumo. Allowable values:<br/><br/>`text`—Logs will appear in SumoLogic in text format.<br/>`json`—Logs will appear in SumoLogic in json format.<br/>`json_merge`—Same as json but if the container logs in json format to stdout it will merge in the container json log at the root level and remove the log field.<br/><br/>Default: `json`
+`MULTILINE_START_REGEXP`|The regular expression for the `concat` plugin to use when merging multi-line messages. Defaults to Julian dates, for example, Jul 29, 2017.
+`NUM_THREADS`|Set the number of HTTP threads to Sumo. It might be necessary to do so in heavy-logging clusters. <br/><br/>Default: `1`
+`READ_FROM_HEAD`|Start to read the logs from the head of file, not bottom. Only applies to containers log files. See in_tail doc for more information.<br/><br/>Default: `true` 
+`SOURCE_CATEGORY` |Set the `_sourceCategory` metadata field in Sumo. <br/><br/>Default: `"%{namespace}/%{pod_name}"`
+`SOURCE_CATEGORY_PREFIX`|Prepends a string that identifies the cluster to the `_sourceCategory` metadata field in Sumo.<br/><br/>Default:  `kubernetes/`
+`SOURCE_CATEGORY_REPLACE_DASH` |Used to replace a dash (-) character with another character. <br/><br/>Default:  `/`<br/><br/>For example, a Pod called `travel-nginx-3629474229-dirmo` within namespace `app` will appear in Sumo with `_sourceCategory=app/travel/nginx`.
+`SOURCE_HOST`|Set the `_sourceHost` metadata field in Sumo.<br/><br/>Default: `""`
+`SOURCE_NAME`|Set the `_sourceName` metadata field in Sumo. <br/><br/> Default: `"%{namespace}.%{pod}.%{container}"`
+
+The following table show which  environment variables affect which Fluentd sources.
 
 | Environment Variable | Containers | Docker | Kubernetes | Systemd |
 |----------------------|------------|--------|------------|---------|
@@ -90,7 +112,8 @@ The following table show which  environment variables affect fluent sources
 | `EXCLUDE_POD_REGEX` | ✔ | ✘ | ✘ | ✘ |
 | `EXCLUDE_UNIT_REGEX` | ✘ | ✘ | ✘ | ✔ |
 
-The `LOG_FORMAT`, `SOURCE_CATEGORY` and `SOURCE_NAME` can be overridden per pod using [annotations](http://kubernetes.io/v1.0/docs/user-guide/annotations.html). For example
+### Override environment variables using annotations
+You can override the `LOG_FORMAT`, `SOURCE_CATEGORY` and `SOURCE_NAME` environment variables, per pod, using [Kubernetes annotations](https://kubernetes.io/docs/concepts/overview/working-with-objects/annotations/). For example:
 
 ```
 apiVersion: v1
@@ -118,8 +141,9 @@ spec:
         - containerPort: 80
 ```
 
-## Excluding via annotation
-You can also use the `sumologic.com/exclude` annotation to exclude data from Sumo Logic.  This data is still sent to FluentD, but will not make it to Sumo.
+### Exclude data using annotations
+
+You can also use the `sumologic.com/exclude` annotation to exclude data from Sumo. This data is sent to FluentD, but not to Sumo.
 
 ```
 apiVersion: v1
@@ -148,14 +172,108 @@ spec:
         - containerPort: 80
 ```
 
-## Logs, Yay
-Simple as that really, your logs should be getting streamed to SumoLogic in json or text format with the appropriate metadata. If using `json` format you can auto extract fields, for example `_sourceCategory=some/app | json auto`
+# Step 3 Set up Heapster for metric collection
 
-### Docker
+The recommended way to collect metrics from Kubernetes clusters is to use Heapster and a Sumo collector with a Graphite source. 
+
+Heapster aggregates metrics across a Kubenetes cluster. Heapster runs as a pod in the cluster, and  discovers all nodes in the cluster and queries usage information from each node's `kubelet`—the on-machine Kubernetes agent. 
+
+Heapster provides metrics at the cluster, node and pod level.
+
+1. Install Heapster in your Kubernetes cluster and configure a Graphite Sink to send the data in Graphite format to Sumo. For instructions, see 
+https://github.com/kubernetes/heapster/blob/master/docs/sink-configuration.md#graphitecarbon.
+
+2. Use the Sumo Docker container. For instructions, see https://hub.docker.com/r/sumologic/collector/.
+
+3. The following sections contain an  example configmap, which contains the `sources.json` configuration, an example service, and an example deployment. Create these manifests in Kubernetes using `kubectl`.
+
+
+## Kubernetes ConfigMap
+```
+kind: ConfigMap
+apiVersion: v1
+metadata:
+  name: "sumo-sources"
+data:
+  sources.json: |-
+    {
+      "api.version": "v1",
+      "sources": [
+        {
+          "name": "SOURCE_NAME",
+          "category": "SOURCE_CATEGORY",
+          "automaticDateParsing": true,
+          "contentType": "Graphite",
+          "timeZone": "UTC",
+          "encoding": "UTF-8",
+          "protocol": "TCP",
+          "port": 2003,
+          "sourceType": "Graphite"
+        }
+      ]
+    }
+
+```
+## Kubernetes Service
+```
+apiVersion: v1
+kind: Service
+metadata:
+  name: sumo-graphite
+spec:
+  ports:
+    - port: 2003
+  selector:
+    app: sumo-graphite
+```
+## Kubernetes Deployment
+```
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  labels:
+    app: sumo-graphite
+  name: sumo-graphite
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        name: sumo-graphite
+        app:sumo-graphite
+      volumes:
+      - name: sumo-sources
+        configMap:
+          name: "sumo-sources"
+          items:
+          - key: sources.json
+            path: sources.json
+      containers:
+      - name: sumo-graphite
+        image: sumologic/collector:latest
+        ports:
+        - containerPort: 2003
+        volumeMounts:
+        - mountPath: /sumo
+          name: sumo-sources
+        env:
+        - name: SUMO_ACCESS_ID
+          value: <ACCESS_ID>
+        - name: SUMO_ACCESS_KEY
+          value: <ACCESS_KEY>
+        - name: SUMO_SOURCES_JSON
+          value: /sumo/sources.json
+
+```
+
+# Log data
+After performing the configuration described above, your logs should start streaming to SumoLogic in `json` or text format with the appropriate metadata. If you are using `json` format you can auto extract fields, for example `_sourceCategory=some/app | json auto`.
+
+## Docker
 ![Docker Logs](/screenshots/docker.png)
 
-### Kubelet
+## Kubelet
 ![Docker Logs](/screenshots/kubelet.png)
 
-### Containers
+## Containers
 ![Docker Logs](/screenshots/container.png)
