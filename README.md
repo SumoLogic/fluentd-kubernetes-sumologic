@@ -1,6 +1,6 @@
 This page describes the Sumo Kubernetes [Fluentd](http://www.fluentd.org/) plugin.
 
-The plugin runs as a Kubernetes [DaemonSet](http://kubernetes.io/docs/admin/daemons/); it runs an instance of the plugin on each physical host in a cluster. Each plugin instance pulls system, kubelet, docker daemon, and container logs from the host and sends them, in JSON or text format, to an HTTP endpoint on a hosted collector in the [Sumo](http://www.sumologic.com) service.
+The plugin runs as a Kubernetes [DaemonSet](http://kubernetes.io/docs/admin/daemons/); it runs an instance of the plugin on each host in a cluster. Each plugin instance pulls system, kubelet, docker daemon, and container logs from the host and sends them, in JSON or text format, to an HTTP endpoint on a hosted collector in the [Sumo](http://www.sumologic.com) service.
 
 **Note** This plugin is community-supported. For support, add a request in the issues tab. 
 
@@ -279,3 +279,11 @@ After performing the configuration described above, your logs should start strea
 
 ## Containers
 ![Docker Logs](/screenshots/container.png)
+
+# Taints and Tolerations
+By default, the fluentd pods will schedule on, and therefore collect logs from, any worker nodes that do not have a taint and any master node that does not have a taint beyond the default master taint. If you would like to schedule pods on all nodes, regardless of taints, uncomment the following line from fluentd.yaml before applying it.
+
+```
+tolerations:
+           #- operator: "Exists"
+```
