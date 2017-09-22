@@ -80,3 +80,8 @@ spec:
             secretKeyRef:
               name: sumologic
               key: collector-url
+      tolerations:
+          #- operator: "Exists"
+          - effect: "NoSchedule"
+            key: "node-role.kubernetes.io/master"
+
