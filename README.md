@@ -12,7 +12,7 @@ The plugin runs as a Kubernetes [DaemonSet](http://kubernetes.io/docs/admin/daem
 - [Environment variables](#environment-variables)
     + [Override environment variables using annotations](#override-environment-variables-using-annotations)
     + [Exclude data using annotations](#exclude-data-using-annotations)
-- [Step 3 Set up Heapster for metric collection](#step-3-set-up-heapster-for-metric-collection)
+- [Step 4 Set up Heapster for metric collection](#step-4-set-up-heapster-for-metric-collection)
   * [Kubernetes ConfigMap](#kubernetes-configmap)
   * [Kubernetes Service](#kubernetes-service)
   * [Kubernetes Deployment](#kubernetes-deployment)
@@ -20,6 +20,7 @@ The plugin runs as a Kubernetes [DaemonSet](http://kubernetes.io/docs/admin/daem
   * [Docker](#docker)
   * [Kubelet](#kubelet)
   * [Containers](#containers)
+- [Taints and Tolerations](#taints-and-tolerations)
 
 
 
@@ -174,7 +175,7 @@ spec:
         - containerPort: 80
 ```
 
-# Step 3 Set up Heapster for metric collection
+# Step 4 Set up Heapster for metric collection
 
 The recommended way to collect metrics from Kubernetes clusters is to use Heapster and a Sumo collector with a Graphite source. 
 
