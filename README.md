@@ -239,16 +239,16 @@ metadata:
     app: sumo-graphite
   name: sumo-graphite
 spec:
-  replicas: 1
+  replicas: 2
   template:
     metadata:
       labels:
-        name: sumo-graphite
-        app:sumo-graphite
+        app: sumo-graphite
+    spec:
       volumes:
       - name: sumo-sources
         configMap:
-          name: "sumo-sources"
+          name: sumo-sources
           items:
           - key: sources.json
             path: sources.json
@@ -262,9 +262,9 @@ spec:
           name: sumo-sources
         env:
         - name: SUMO_ACCESS_ID
-          value: <ACCESS_ID>
+          value: <SUMO_ACCESS_ID>
         - name: SUMO_ACCESS_KEY
-          value: <ACCESS_KEY>
+          value: <SUMO_ACCESS_KEY>
         - name: SUMO_SOURCES_JSON
           value: /sumo/sources.json
 
