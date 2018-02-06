@@ -277,6 +277,7 @@ After performing the configuration described above, your logs should start strea
 ![Docker Logs](/screenshots/docker.png)
 
 ## Kubelet
+Note that Kubelet logs are only collected if you are using systemd.  Kubernetes no longer outputs the kubelet logs to a file.
 ![Docker Logs](/screenshots/kubelet.png)
 
 ## Containers
