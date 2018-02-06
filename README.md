@@ -90,7 +90,7 @@ Environment | Variable Description
 `EXCLUDE_UNIT_REGEX` |A regular expression for `systemd` units. Matching units will be excluded from Sumo. The logs will still be sent to FluentD.
 `FLUENTD_SOURCE`|Fluentd can tail files or query `systemd`. Allowable values: `file`, `Systemd`. <br/><br/>Default: `file` 
 `FLUENTD_USER_CONFIG_DIR`|A directory of user-defined fluentd configuration files, which must be in the  `*.conf` directory in the container.
-`FLUSH_INTERVAL` |How frequently to push logs to Sumo.<br/><br/>Default: `5s`
+`FLUSH_INTERVAL` |How frequently to push logs to Sumo.<br/><br/>Default: `30s`
 `KUBERNETES_META`|Include or exclude Kubernetes metadata such as `namespace` and `pod_name` if using JSON log format. <br/><br/>Default: `true`
 `LOG_FORMAT`|Format in which to post logs to Sumo. Allowable values:<br/><br/>`text`—Logs will appear in SumoLogic in text format.<br/>`json`—Logs will appear in SumoLogic in json format.<br/>`json_merge`—Same as json but if the container logs in json format to stdout it will merge in the container json log at the root level and remove the log field.<br/><br/>Default: `json`
 `MULTILINE_START_REGEXP`|The regular expression for the `concat` plugin to use when merging multi-line messages. Defaults to Julian dates, for example, Jul 29, 2017.
