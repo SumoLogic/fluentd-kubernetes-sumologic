@@ -185,7 +185,7 @@ Heapster aggregates metrics across a Kubenetes cluster. Heapster runs as a pod i
 Heapster provides metrics at the cluster, node and pod level.
 
 1. Install Heapster in your Kubernetes cluster and configure a Graphite Sink to send the data in Graphite format to Sumo. For instructions, see 
-https://github.com/kubernetes/heapster/blob/master/docs/sink-configuration.md#graphitecarbon. Assuming you have used the above YAML files to configure your system, then the sink option in graphite would be `--sink=graphite:tcp://sumo-graphite.kube-system.svc:2003`
+https://github.com/kubernetes/heapster/blob/master/docs/sink-configuration.md#graphitecarbon. Assuming you have used the below YAML files to configure your system, then the sink option in graphite would be `--sink=graphite:tcp://sumo-graphite.kube-system.svc:2003`.  You may need to change this depending on the namespace you run the deployment in, the name of the service or the port number for your Graphite source.
 
 2. Use the Sumo Docker container. For instructions, see https://hub.docker.com/r/sumologic/collector/.
 
