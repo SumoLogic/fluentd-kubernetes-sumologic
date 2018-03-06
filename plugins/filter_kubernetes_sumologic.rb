@@ -53,7 +53,7 @@ module Fluent
         end
 
         unless @exclude_facility_regex.empty?
-          if Regexp.compile(@exclude_facliity_regex).match(record['SYSLOG_FACILITY'])
+          if Regexp.compile(@exclude_facility_regex).match(record['SYSLOG_FACILITY'])
             return nil
           end
         end
