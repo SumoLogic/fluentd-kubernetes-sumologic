@@ -1,5 +1,8 @@
 # Change Log
 
+## 1.7
+- [Fix typo in sumologic kubernetes filter](https://github.com/SumoLogic/fluentd-kubernetes-sumologic/pull/51)
+
 ## v1.6
  - upgrade fluentd-sumo_output plugin to latest 1.0, adds support for millisecond precision.
  - add support for kubernetes audit log
