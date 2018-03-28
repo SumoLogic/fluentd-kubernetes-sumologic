@@ -36,6 +36,7 @@ ENV FLUENTD_USER_CONFIG_DIR "/fluentd/conf.d/user"
 ENV MULTILINE_START_REGEXP "/^\w{3} \d{1,2}, \d{4}/"
 ENV CONCAT_SEPARATOR ""
 ENV AUDIT_LOG_PATH "/mnt/log/kube-apiserver-audit.log"
+ENV TIME_KEY "time"
 
 COPY ./conf.d/ /fluentd/conf.d/
 COPY ./etc/* /fluentd/etc/

@@ -79,6 +79,7 @@ If you use Helm to manage your Kubernetes resources, there is a Helm chart for t
 
 Environment | Variable Description
 ----------- | --------------------
+`AUDIT_LOG_PATH`|Define the path to the [Kubernetes Audit Log](https://kubernetes.io/docs/tasks/debug-application-cluster/audit/) <br/><br/> Default: `/mnt/log/kube-apiserver-audit.log`
 `CONCAT_SEPARATOR` |The character to use to delimit lines within the final concatenated message. Most multi-line messages contain a newline at the end of each line. <br/><br/> Default: ""
 `EXCLUDE_CONTAINER_REGEX` |A regular expression for containers. Matching containers will be excluded from Sumo. The logs will still be sent to FluentD.
 `EXCLUDE_FACILITY_REGEX`|A regular expression for syslog [facilities](https://en.wikipedia.org/wiki/Syslog#Facility). Matching facilities will be excluded from Sumo. The logs will still be sent to FluentD.
@@ -101,7 +102,7 @@ Environment | Variable Description
 `SOURCE_CATEGORY_REPLACE_DASH` |Used to replace a dash (-) character with another character. <br/><br/>Default:  `/`<br/><br/>For example, a Pod called `travel-nginx-3629474229-dirmo` within namespace `app` will appear in Sumo with `_sourceCategory=app/travel/nginx`.
 `SOURCE_HOST`|Set the `_sourceHost` metadata field in Sumo.<br/><br/>Default: `""`
 `SOURCE_NAME`|Set the `_sourceName` metadata field in Sumo. <br/><br/> Default: `"%{namespace}.%{pod}.%{container}"`
-`AUDIT_LOG_PATH`|Define the path to the [Kubernetes Audit Log](https://kubernetes.io/docs/tasks/debug-application-cluster/audit/) <br/><br/> Default: `/mnt/log/kube-apiserver-audit.log`
+`TIME_KEY`|The field name for json formatted sources that should be used as the time. See [time_key](https://docs.fluentd.org/v0.12/articles/formatter_json#time_key-(string,-optional,-defaults-to-%E2%80%9Ctime%E2%80%9D)). Default: `time`
 
 The following table show which  environment variables affect which Fluentd sources.
 
@@ -115,6 +116,7 @@ The following table show which  environment variables affect which Fluentd sourc
 | `EXCLUDE_PRIORITY_REGEX` | ✘ | ✘ | ✘ | ✔ |
 | `EXCLUDE_POD_REGEX` | ✔ | ✘ | ✘ | ✘ |
 | `EXCLUDE_UNIT_REGEX` | ✘ | ✘ | ✘ | ✔ |
+| `TIME_KEY` | ✔ | ✘ | ✘ | ✘ |
 
 ### Override environment variables using annotations
 You can override the `LOG_FORMAT`, `SOURCE_CATEGORY` and `SOURCE_NAME` environment variables, per pod, using [Kubernetes annotations](https://kubernetes.io/docs/concepts/overview/working-with-objects/annotations/). For example:
