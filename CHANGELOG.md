@@ -1,5 +1,9 @@
 # Change Log
 
+## 1.8
+- [Change default FLUSH_INTERVAL to 5s](https://github.com/SumoLogic/fluentd-kubernetes-sumologic/commit/7b100306d6c84335ee0d4ec6724a3218e8028893)
+- [Handle possible timeout from Concat Plugin and ensure all logs resume the flow thru rest of pipeline when this occurs](https://github.com/SumoLogic/fluentd-kubernetes-sumologic/commit/7b100306d6c84335ee0d4ec6724a3218e8028893)
+
 ## 1.7
 - [Fix typo in sumologic kubernetes filter](https://github.com/SumoLogic/fluentd-kubernetes-sumologic/pull/51)
 
