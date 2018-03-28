@@ -23,7 +23,7 @@ RUN mkdir -p /fluentd/conf.d && \
 
 # Default settings
 ENV LOG_FORMAT "json"
-ENV FLUSH_INTERVAL "30s"
+ENV FLUSH_INTERVAL "5s"
 ENV NUM_THREADS "1"
 ENV SOURCE_CATEGORY "%{namespace}/%{pod_name}"
 ENV SOURCE_CATEGORY_PREFIX "kubernetes/"
