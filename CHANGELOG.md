@@ -2,6 +2,7 @@
 
 ## 1.9
 - base docker image was quite stale, this release bumps to 1.1.3 and anchors the plugins to specific versions.  Same versions from 1.8 used, this just enforces consistency.
+- ensure read_from_head in systemd respects setting via environment variable 
 
 ## 1.8
 - [Change default FLUSH_INTERVAL to 5s](https://github.com/SumoLogic/fluentd-kubernetes-sumologic/commit/7b100306d6c84335ee0d4ec6724a3218e8028893)
