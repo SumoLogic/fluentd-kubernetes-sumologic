@@ -1,5 +1,8 @@
 # Change Log
 
+## 1.9
+- base docker image was quite stale, this release bumps to 1.1.3 and anchors the plugins to specific versions.  Same versions from 1.8 used, this just enforces consistency.
+
 ## 1.8
 - [Change default FLUSH_INTERVAL to 5s](https://github.com/SumoLogic/fluentd-kubernetes-sumologic/commit/7b100306d6c84335ee0d4ec6724a3218e8028893)
 - [Handle possible timeout from Concat Plugin and ensure all logs resume the flow thru rest of pipeline when this occurs](https://github.com/SumoLogic/fluentd-kubernetes-sumologic/commit/7b100306d6c84335ee0d4ec6724a3218e8028893)
