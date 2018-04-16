@@ -1,5 +1,9 @@
 # Change Log
 
+## 1.10
+- [add missing exclude options to kubelet logs](https://github.com/SumoLogic/fluentd-kubernetes-sumologic/commit/ced3304f1e64173554a8dee6367c785945f3ce99)
+- [Use multi-stage build to eliminate build tools from final image](https://github.com/SumoLogic/fluentd-kubernetes-sumologic/pull/57)
+
 ## 1.9
 - base docker image was quite stale, this release bumps to 1.1.3 and anchors the plugins to specific versions.  Same versions from 1.8 used, this just enforces consistency.
 - ensure read_from_head in systemd respects setting via environment variable 
