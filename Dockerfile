@@ -1,5 +1,5 @@
-FROM fluent/fluentd:v1.1.3-debian
-WORKDIR /home/fluent
+FROM fluent/fluentd:v1.1.3-debian AS builder
+
 ENV PATH /home/fluent/.gem/ruby/2.3.0/bin:$PATH
 
 # New fluent image dynamically creates user in entrypoint
@@ -15,6 +15,11 @@ RUN [ -f /bin/entrypoint.sh ] && /bin/entrypoint.sh echo || : && \
     gem sources -c && \
     apt-get remove --purge -y build-essential ruby-dev libffi-dev libsystemd-dev && \
     rm -rf /var/lib/apt/lists/*
+
+FROM fluent/fluentd:v1.1.3-debian
+
+WORKDIR /home/fluent
+ENV PATH /home/fluent/.gem/ruby/2.3.0/bin:$PATH
 
 RUN mkdir -p /mnt/pos
 EXPOSE 24284
@@ -39,6 +44,8 @@ ENV MULTILINE_START_REGEXP "/^\w{3} \d{1,2}, \d{4}/"
 ENV CONCAT_SEPARATOR ""
 ENV AUDIT_LOG_PATH "/mnt/log/kube-apiserver-audit.log"
 ENV TIME_KEY "time"
+
+COPY --from=builder /var/lib/gems /var/lib/gems
 
 COPY ./conf.d/ /fluentd/conf.d/
 COPY ./etc/* /fluentd/etc/
