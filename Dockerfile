@@ -8,7 +8,7 @@ RUN [ -f /bin/entrypoint.sh ] && /bin/entrypoint.sh echo || : && \
     apt-get install -y build-essential ruby-dev libffi-dev libsystemd-dev && \
     gem install fluent-plugin-systemd -v 0.3.1 && \
     gem install fluent-plugin-record-reformer -v 0.9.1 && \
-    gem install fluent-plugin-kubernetes_metadata_filter -v 1.0.1 && \
+    gem install fluent-plugin-kubernetes_metadata_filter -v 1.0.2 && \
     gem install fluent-plugin-sumologic_output -v 1.0.2 && \
     gem install fluent-plugin-concat -v 2.2.1 && \
     rm -rf /home/fluent/.gem/ruby/2.3.0/cache/*.gem && \
