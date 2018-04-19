@@ -1,5 +1,8 @@
 # Change Log
 
+## 1.11
+-[upgrade metadata filter plugin to address #54](https://github.com/SumoLogic/fluentd-kubernetes-sumologic/commit/eb7a69ce5b36a9d8150bd0a0b62f98fb18d35367)
+
 ## 1.10
 - [add missing exclude options to kubelet logs](https://github.com/SumoLogic/fluentd-kubernetes-sumologic/commit/ced3304f1e64173554a8dee6367c785945f3ce99)
 - [Use multi-stage build to eliminate build tools from final image](https://github.com/SumoLogic/fluentd-kubernetes-sumologic/pull/57)
