@@ -83,26 +83,34 @@ module Fluent
             :source_host => kubernetes['host'],
         }
 
+        annotations = kubernetes.fetch('annotations', {})
+
+        if annotations['sumologic.com/include'] == 'true'
+          include = true
+        else
+          include = false
+        end
+        
         unless @exclude_namespace_regex.empty?
-          if Regexp.compile(@exclude_namespace_regex).match(k8s_metadata[:namespace])
+          if Regexp.compile(@exclude_namespace_regex).match(k8s_metadata[:namespace]) and not include
             return nil
           end
         end
 
         unless @exclude_pod_regex.empty?
-          if Regexp.compile(@exclude_pod_regex).match(k8s_metadata[:pod])
+          if Regexp.compile(@exclude_pod_regex).match(k8s_metadata[:pod]) and not include
             return nil
           end
         end
 
         unless @exclude_container_regex.empty?
-          if Regexp.compile(@exclude_container_regex).match(k8s_metadata[:container])
+          if Regexp.compile(@exclude_container_regex).match(k8s_metadata[:container]) and not include
             return nil
           end
         end
 
         unless @exclude_host_regex.empty?
-          if Regexp.compile(@exclude_host_regex).match(k8s_metadata[:source_host])
+          if Regexp.compile(@exclude_host_regex).match(k8s_metadata[:source_host]) and not include
             return nil
           end
         end
@@ -115,8 +123,6 @@ module Fluent
         else
           k8s_metadata[:pod_name] = pod_parts[0..-2].join('-')
         end
-
-        annotations = kubernetes.fetch('annotations', {})
 
         if annotations['sumologic.com/exclude'] == 'true'
           return nil
