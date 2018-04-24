@@ -12,6 +12,7 @@ The plugin runs as a Kubernetes [DaemonSet](http://kubernetes.io/docs/admin/daem
 - [Environment variables](#environment-variables)
     + [Override environment variables using annotations](#override-environment-variables-using-annotations)
     + [Exclude data using annotations](#exclude-data-using-annotations)
+    + [Include excluded using annotations](#include-excluded-using-annotations)
 - [Step 4 Set up Heapster for metric collection](#step-4-set-up-heapster-for-metric-collection)
   * [Kubernetes ConfigMap](#kubernetes-configmap)
   * [Kubernetes Service](#kubernetes-service)
@@ -170,6 +171,37 @@ spec:
         sumologic.com/sourceCategory: "mywebsite/nginx"
         sumologic.com/sourceName: "mywebsite_nginx"
         sumologic.com/exclude: "true"
+    spec:
+      containers:
+      - name: nginx
+        image: nginx
+        ports:
+        - containerPort: 80
+```
+
+### Include excluded using annotations
+
+If you excluded a whole namespace, but still need one or few pods to be still included for shipping to Sumologic, you can use the `sumologic.com/include` annotation to include data to Sumo. It takes precedence over the exclusion described above.
+
+```
+apiVersion: v1
+kind: ReplicationController
+metadata:
+  name: nginx
+spec:
+  replicas: 1
+  selector:
+    app: mywebsite
+  template:
+    metadata:
+      name: nginx
+      labels:
+        app: mywebsite
+      annotations:
+        sumologic.com/format: "text"
+        sumologic.com/sourceCategory: "mywebsite/nginx"
+        sumologic.com/sourceName: "mywebsite_nginx"
+        sumologic.com/include: "true"
     spec:
       containers:
       - name: nginx
