@@ -1,5 +1,8 @@
 # Change Log
 
+## 1.12
+-[Allow hand picked data to be sent to sumo when certain exclusions apply](https://github.com/SumoLogic/fluentd-kubernetes-sumologic/pull/58)
+
 ## 1.11
 -[upgrade metadata filter plugin to address #54](https://github.com/SumoLogic/fluentd-kubernetes-sumologic/commit/eb7a69ce5b36a9d8150bd0a0b62f98fb18d35367)
 
