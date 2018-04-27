@@ -1,8 +1,11 @@
 This page describes the Sumo Kubernetes [Fluentd](http://www.fluentd.org/) plugin.
 
-The plugin runs as a Kubernetes [DaemonSet](http://kubernetes.io/docs/admin/daemons/); it runs an instance of the plugin on each host in a cluster. Each plugin instance pulls system, kubelet, docker daemon, and container logs from the host and sends them, in JSON or text format, to an HTTP endpoint on a hosted collector in the [Sumo](http://www.sumologic.com) service.
+## Support
+The code in this repository has been contributed by the Sumo Logic community and is not officially supported by Sumo Logic. For any issues or questions please submit an issue through GitHub or start a conversation within the [Sumo Logic Community](https://community.sumologic.com) forums.  The maintainers of this project will work directly with the community to answer any questions, address bugs, or review any requests for new features. 
 
-**Note** This plugin is community-supported. For support, add a request in the issues tab. 
+## Installation
+
+The plugin runs as a Kubernetes [DaemonSet](http://kubernetes.io/docs/admin/daemons/); it runs an instance of the plugin on each host in a cluster. Each plugin instance pulls system, kubelet, docker daemon, and container logs from the host and sends them, in JSON or text format, to an HTTP endpoint on a hosted collector in the [Sumo](http://www.sumologic.com) service.
 
 - [Step 1  Create hosted collector and HTTP source in Sumo](#step-1--create-hosted-collector-and-http-source-in-sumo)
 - [Step 2  Create a Kubernetes secret](#step-2--create-a-kubernetes-secret)
