@@ -1,5 +1,8 @@
 # Change Log
 
+## 1.14
+-[kubernetes_sumologic plugin always adds a timestamp field to json logs](https://github.com/SumoLogic/fluentd-kubernetes-sumologic/issues/61)
+
 ## 1.13
 -[Add ntp and timesyncd to systemd services](https://github.com/SumoLogic/fluentd-kubernetes-sumologic/pull/59#pullrequestreview-115374648)
 -[Updates to new Audit Logging format](https://github.com/SumoLogic/fluentd-kubernetes-sumologic/commit/90cc454927055cd337a91942b285e6b57264e8c5)
