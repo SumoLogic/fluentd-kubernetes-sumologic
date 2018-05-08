@@ -107,6 +107,7 @@ Environment | Variable Description
 `SOURCE_HOST`|Set the `_sourceHost` metadata field in Sumo.<br/><br/>Default: `""`
 `SOURCE_NAME`|Set the `_sourceName` metadata field in Sumo. <br/><br/> Default: `"%{namespace}.%{pod}.%{container}"`
 `TIME_KEY`|The field name for json formatted sources that should be used as the time. See [time_key](https://docs.fluentd.org/v0.12/articles/formatter_json#time_key-(string,-optional,-defaults-to-%E2%80%9Ctime%E2%80%9D)). Default: `time`
+`ADD_TIMESTAMP`|Option to control adding timestamp to logs. Default: `true`
 
 The following table show which  environment variables affect which Fluentd sources.
 
