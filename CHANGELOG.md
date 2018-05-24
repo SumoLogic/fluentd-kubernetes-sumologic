@@ -1,5 +1,9 @@
 # Change Log
 
+## 1.15
+-[Expose environment variable to configure proxy_uri in sumo out configuration](https://github.com/SumoLogic/fluentd-kubernetes-sumologic/issues/65)
+-[Allow container path for in_tail plugin to be configured via environment variable.  Default to current value for backwards compatibility.](https://github.com/SumoLogic/fluentd-kubernetes-sumologic/issues/64)
+
 ## 1.14
 -[kubernetes_sumologic plugin always adds a timestamp field to json logs](https://github.com/SumoLogic/fluentd-kubernetes-sumologic/issues/61)
 
