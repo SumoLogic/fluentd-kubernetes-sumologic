@@ -25,6 +25,7 @@ The plugin runs as a Kubernetes [DaemonSet](http://kubernetes.io/docs/admin/daem
   * [Kubelet](#kubelet)
   * [Containers](#containers)
 - [Taints and Tolerations](#taints-and-tolerations)
+- [Running On OpenShift](#running-on-openshift)
 
 
 
@@ -329,4 +330,23 @@ By default, the fluentd pods will schedule on, and therefore collect logs from, 
 ```
 tolerations:
            #- operator: "Exists"
+```
+
+# Running On OpenShift
+
+This daemonset setting mounts /var/log as service account FluentD so you need to run containers as privileged container. Here is command example:
+
+```
+oc adm policy add-scc-to-user privileged system:serviceaccount:logging:sumologic-fluentd
+oc adm policy add-cluster-role-to-user cluster-reader system:serviceaccount:logging:sumologic-fluentd
+oc label node —all logging-sumologic-fluentd=true
+oc patch ds sumologic-fluentd -p "spec:
+  template:
+    spec:
+      containers:
+      - image: sumologic/fluentd-kubernetes-sumologic:latest
+        name: fluentd
+        securityContext:
+          privileged: true"
+oc delete pod -l name = fluentd-sumologic
 ```
