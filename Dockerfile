@@ -46,6 +46,7 @@ ENV AUDIT_LOG_PATH "/mnt/log/kube-apiserver-audit.log"
 ENV TIME_KEY "time"
 ENV ADD_TIMESTAMP "true"
 ENV CONTAINER_LOGS_PATH "/mnt/log/containers/*.log"
+ENV ENABLE_STAT_WATCHER "true"
 
 COPY --from=builder /var/lib/gems /var/lib/gems
 

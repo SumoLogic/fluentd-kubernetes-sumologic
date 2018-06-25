@@ -111,6 +111,7 @@ Environment | Variable Description
 `ADD_TIMESTAMP`|Option to control adding timestamp to logs. Default: `true`
 `CONTAINER_LOGS_PATH`|Specify the path in_tail should watch for container logs. Default: `/mnt/log/containers/*.log`
 `PROXY_URI`|Add the uri of the proxy environment if present.
+`ENABLE_STAT_WATCHER`|Option to control the enabling of [stat_watcher](https://docs.fluentd.org/v1.0/articles/in_tail#enable_stat_watcher). Default: `true`
 
 The following table show which  environment variables affect which Fluentd sources.
 
@@ -125,6 +126,9 @@ The following table show which  environment variables affect which Fluentd sourc
 | `EXCLUDE_POD_REGEX` | ✔ | ✘ | ✘ | ✘ |
 | `EXCLUDE_UNIT_REGEX` | ✘ | ✘ | ✘ | ✔ |
 | `TIME_KEY` | ✔ | ✘ | ✘ | ✘ |
+
+### FluentD stops processing logs
+When dealing with large volumes of data (TB's from what we have seen), FluentD may stop processing logs, but continue to run.  This issue seems to be caused by the [scalability of the inotify process](https://github.com/fluent/fluentd/issues/1630) that is packaged with the FluentD in_tail plugin.  If you encounter this situation, setting the `ENABLE_STAT_WATCHER` to `false` should resolve this issue.
 
 ### Override environment variables using annotations
 You can override the `LOG_FORMAT`, `SOURCE_CATEGORY` and `SOURCE_NAME` environment variables, per pod, using [Kubernetes annotations](https://kubernetes.io/docs/concepts/overview/working-with-objects/annotations/). For example:
