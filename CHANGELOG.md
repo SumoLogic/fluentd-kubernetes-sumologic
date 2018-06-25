@@ -1,5 +1,8 @@
 # Change Log
 
+## 1.16
+-[Enable ability to configure enable_stat_watcher on in_tail plugins to workaround issue where inotify may hang.](https://github.com/SumoLogic/fluentd-kubernetes-sumologic/commit/b963866aea0587d079913f87ca1a60b4d8afb982)
+
 ## 1.15
 -[Expose environment variable to configure proxy_uri in sumo out configuration](https://github.com/SumoLogic/fluentd-kubernetes-sumologic/issues/65)
 -[Allow container path for in_tail plugin to be configured via environment variable.  Default to current value for backwards compatibility.](https://github.com/SumoLogic/fluentd-kubernetes-sumologic/issues/64)
