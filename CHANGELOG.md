@@ -1,5 +1,8 @@
 # Change Log
 
+## 1.17
+- [fix #69 by upgrading sumologic fluentd output to 1.1.1 which contains fix to handle json parsing correctly](https://github.com/SumoLogic/fluentd-kubernetes-sumologic/commit/498bd09fc2f353f0986ef3a9c583e4fb8ce7b401)
+
 ## 1.16
 -[Enable ability to configure enable_stat_watcher on in_tail plugins to workaround issue where inotify may hang.](https://github.com/SumoLogic/fluentd-kubernetes-sumologic/commit/b963866aea0587d079913f87ca1a60b4d8afb982)
 
