@@ -5,7 +5,7 @@ The code in this repository has been contributed by the Sumo Logic community and
 
 ## Installation
 
-The plugin runs as a Kubernetes [DaemonSet](http://kubernetes.io/docs/admin/daemons/); it runs an instance of the plugin on each host in a cluster. Each plugin instance pulls system, kubelet, docker daemon, and container logs from the host and sends them, in JSON or text format, to an HTTP endpoint on a hosted collector in the [Sumo](http://www.sumologic.com) service.
+The plugin runs as a Kubernetes [DaemonSet](http://kubernetes.io/docs/admin/daemons/); it runs an instance of the plugin on each host in a cluster. Each plugin instance pulls system, kubelet, docker daemon, and container logs from the host and sends them, in JSON or text format, to an HTTP endpoint on a hosted collector in the [Sumo](http://www.sumologic.com) service.  Note the plugin with default configuration requires Kubernetes >=1.8.  See [the section below on running this on Kubernetes <1.8](#running-on-kubernetes-versions-<1.8)
 
 - [Step 1  Create hosted collector and HTTP source in Sumo](#step-1--create-hosted-collector-and-http-source-in-sumo)
 - [Step 2  Create a Kubernetes secret](#step-2--create-a-kubernetes-secret)
@@ -64,8 +64,8 @@ See the sample Kubernetes DaemonSet and Role in [fluentd.yaml](/daemonset/rbac/f
 
 2. In `fluentd-kubernetes-sumologic`, install the chart using `kubectl`.
 
-Which `.yaml` file you should use depends on whether or not you are running RBAC for authorization. RBAC is enabled by default as of Kubernetes 1.6.
-
+Which `.yaml` file you should use depends on whether or not you are running RBAC for authorization. RBAC is enabled by default as of Kubernetes 1.6.  Note the plugin with default configuration requires Kubernetes >=1.8. See the section below on [running this on Kubernetes <1.8](#running-on-kubernetes-versions-<1.8)
+                                                                                                                                                      
 **Non-RBAC (Kubernetes 1.5 and below)** 
 
 `kubectl create -f /daemonset/nonrbac/fluentd.yaml` 
@@ -353,4 +353,23 @@ oc patch ds sumologic-fluentd -p "spec:
         securityContext:
           privileged: true"
 oc delete pod -l name = fluentd-sumologic
+```
+
+## Running on Kubernetes versions <1.8
+
+In order to run this plugin on Kubernetes <1.8 you will need to make some changes the yaml file prior to deploying it.
+
+Replace:
+
+```
+      - name: pos-files
+        hostPath:
+          path: /var/run/fluentd-pos
+          type: ""
+```
+With:
+
+```
+      - name: pos-files
+        emptyDir: {}
 ```

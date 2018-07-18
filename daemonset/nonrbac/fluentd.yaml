@@ -13,7 +13,9 @@ spec:
     spec:
       volumes:
       - name: pos-files
-        emptyDir: {}
+        hostPath:
+          path: /var/run/fluentd-pos
+          type: ""
       - name: host-logs
         hostPath:
           path: /var/log/
