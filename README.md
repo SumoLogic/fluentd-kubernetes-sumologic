@@ -373,3 +373,32 @@ With:
       - name: pos-files
         emptyDir: {}
 ```
+
+## Output to S3
+
+If you need to also send data to S3 (i.e. as a secondary backup/audit trail) the image includes the `fluent-plugin-s3` plugin.
+
+**Example:** Send logs with the `kube-*` label (e.g. kube-scheduler, kube-controller-manager, etc.) to S3:
+
+```
+<match kube-**>
+  @type s3
+
+  aws_key_id YOUR_AWS_KEY_ID
+  aws_sec_key YOUR_AWS_SECRET_KEY
+  s3_bucket YOUR_S3_BUCKET_NAME
+  s3_region us-west-1
+  path logs/
+  buffer_path /var/log/fluent/s3
+
+  time_slice_format %Y%m%d%H
+  time_slice_wait 10m
+  utc
+
+  buffer_chunk_limit 256m
+</match>
+```
+
+Add this to `conf.d/user/out.s3.conf`, and logs will be streamed to S3 in time-sliced intervals.
+
+More details about the S3 plugin can be found [in the docs](https://docs.fluentd.org/v0.12/articles/out_s3).
