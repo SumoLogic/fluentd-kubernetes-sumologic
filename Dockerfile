@@ -6,6 +6,7 @@ ENV PATH /home/fluent/.gem/ruby/2.3.0/bin:$PATH
 RUN [ -f /bin/entrypoint.sh ] && /bin/entrypoint.sh echo || : && \
     apt-get update && \
     apt-get install -y build-essential ruby-dev libffi-dev libsystemd-dev && \
+    gem install fluent-plugin-s3 -v 1.1.4 && \
     gem install fluent-plugin-systemd -v 0.3.1 && \
     gem install fluent-plugin-record-reformer -v 0.9.1 && \
     gem install fluent-plugin-kubernetes_metadata_filter -v 1.0.2 && \
