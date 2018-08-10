@@ -1,5 +1,8 @@
 # Change Log
 
+## 1.18
+- add FluentD S3 Output plugin to give more output options.   
+
 ## 1.17
 - [fix #69 by upgrading sumologic fluentd output to 1.1.1 which contains fix to handle json parsing correctly](https://github.com/SumoLogic/fluentd-kubernetes-sumologic/commit/498bd09fc2f353f0986ef3a9c583e4fb8ce7b401)
 
