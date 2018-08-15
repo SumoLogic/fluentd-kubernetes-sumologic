@@ -40,9 +40,6 @@ module Fluent
 
       unless @source_category.nil?
         sumo_metadata[:category] = @source_category.dup
-        unless @source_category_prefix.nil?
-          sumo_metadata[:category].prepend(@source_category_prefix)
-        end
       end
 
       if record.key?('_SYSTEMD_UNIT') and not record.fetch('_SYSTEMD_UNIT').nil?
@@ -147,7 +144,6 @@ module Fluent
         else
           sumo_metadata[:category] = (annotations['sumologic.com/sourceCategory'] % k8s_metadata).prepend(@source_category_prefix)
         end
-        sumo_metadata[:category].gsub!('-', @source_category_replace_dash)
 
         # Strip kubernetes metadata from json if disabled
         if annotations['sumologic.com/kubernetes_meta'] == 'false' || !@kubernetes_meta
