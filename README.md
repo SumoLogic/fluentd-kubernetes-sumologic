@@ -1,7 +1,7 @@
 This page describes the Sumo Kubernetes [Fluentd](http://www.fluentd.org/) plugin.
 
 ## Support
-The code in this repository has been contributed by the Sumo Logic community and is not officially supported by Sumo Logic. For any issues or questions please submit an issue through GitHub or start a conversation within the [Sumo Logic Community](https://community.sumologic.com) forums.  The maintainers of this project will work directly with the community to answer any questions, address bugs, or review any requests for new features. 
+The code in this repository has been developed in collaboration with the Sumo Logic community and is not supported via standard Sumo Logic Support channels. For any issues or questions please submit an issue within the GitHub repository. The maintainers of this project will work directly with the community to answer any questions, address bugs, or review any requests for new features. 
 
 ## Installation
 
