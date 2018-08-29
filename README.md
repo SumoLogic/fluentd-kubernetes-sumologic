@@ -376,29 +376,44 @@ With:
 
 ## Output to S3
 
-If you need to also send data to S3 (i.e. as a secondary backup/audit trail) the image includes the `fluent-plugin-s3` plugin.
+If you need to also send data to S3 (i.e. as a secondary backup/audit trail) the image includes the `fluent-plugin-s3` plugin.  In order to send the logs from FluentD to multiple outputs, you must use the `copy` plugin.  This image comes with an [OOB configuration](conf.d/out.sumo.conf) to output the logs to Sumo Logic. In order to output to multiple destinations, you need to modify that existing configuration.
 
-**Example:** Send logs with the `kube-*` label (e.g. kube-scheduler, kube-controller-manager, etc.) to S3:
+**Example:** Send all logs to S3 and Sumo:
 
 ```
-<match kube-**>
-  @type s3
-
-  aws_key_id YOUR_AWS_KEY_ID
-  aws_sec_key YOUR_AWS_SECRET_KEY
-  s3_bucket YOUR_S3_BUCKET_NAME
-  s3_region us-west-1
-  path logs/
-  buffer_path /var/log/fluent/s3
-
-  time_slice_format %Y%m%d%H
-  time_slice_wait 10m
-  utc
-
-  buffer_chunk_limit 256m
+<match **>
+  @type copy
+  <store>
+    @type sumologic
+    log_key log
+    endpoint "#{ENV['COLLECTOR_URL']}"
+    verify_ssl "#{ENV['VERIFY_SSL']}"
+    log_format "#{ENV['LOG_FORMAT']}"
+    flush_interval "#{ENV['FLUSH_INTERVAL']}"
+    num_threads "#{ENV['NUM_THREADS']}"
+    open_timeout 60
+    add_timestamp "#{ENV['ADD_TIMESTAMP']}"
+    proxy_uri "#{ENV['PROXY_URI']}"
+  </store>
+  <store>
+    @type s3
+  
+    aws_key_id YOUR_AWS_KEY_ID
+    aws_sec_key YOUR_AWS_SECRET_KEY
+    s3_bucket YOUR_S3_BUCKET_NAME
+    s3_region us-west-1
+    path logs/
+    buffer_path /var/log/fluent/s3
+  
+    time_slice_format %Y%m%d%H
+    time_slice_wait 10m
+    utc
+  
+    buffer_chunk_limit 256m
+  </store>
 </match>
 ```
 
-Add this to `conf.d/user/out.s3.conf`, and logs will be streamed to S3 in time-sliced intervals.
+You can replace the OOB configuration by creating a new Docker image from our image or by using a configmap to inject the new configuration to the pod.
 
 More details about the S3 plugin can be found [in the docs](https://docs.fluentd.org/v0.12/articles/out_s3).
