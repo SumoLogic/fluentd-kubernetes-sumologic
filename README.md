@@ -315,6 +315,23 @@ spec:
 
 ```
 
+# Templating Kubernetes metadata
+The following Kubernetes metadata is available for string templating:
+ 
+| String template  | Description                                             |
+| ---------------  | ------------------------------------------------------  |                                         
+| `%{namespace}`   | Namespace name                                          |
+| `%{pod}`         | Full pod name (e.g. `travel-products-4136654265-zpovl`) | 
+| `%{pod_name}`    | Friendly pod name (e.g. `travel-products`)              | 
+| `%{container}`   | Container name                                          |
+| `%{source_host}` | Host                                                    |
+| `%{label:foo}`   | The value of label `foo`                                | 
+
+## Missing labels
+Unlike the other templates, labels are not guaranteed to exist, so missing labels interpolate as `"undefined"`.
+
+For example, if you have only the label `app: travel` but you define `SOURCE_NAME="%{label:app}@%{label:version}"`, the source name will appear as `travel@undefined`.
+
 # Log data
 After performing the configuration described above, your logs should start streaming to SumoLogic in `json` or text format with the appropriate metadata. If you are using `json` format you can auto extract fields, for example `_sourceCategory=some/app | json auto`.
 

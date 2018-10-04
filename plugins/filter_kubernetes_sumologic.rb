@@ -83,6 +83,9 @@ module Fluent
             :source_host => kubernetes['host'],
         }
 
+        kubernetes['labels'].each { |k, v| k8s_metadata["label:#{k}".to_sym] = v }
+        k8s_metadata.default = "undefined"
+
         annotations = kubernetes.fetch('annotations', {})
 
         if annotations['sumologic.com/include'] == 'true'
