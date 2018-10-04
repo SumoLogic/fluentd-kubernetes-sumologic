@@ -358,8 +358,8 @@ tolerations:
 This daemonset setting mounts /var/log as service account FluentD so you need to run containers as privileged container. Here is command example:
 
 ```
-oc adm policy add-scc-to-user privileged system:serviceaccount:logging:sumologic-fluentd
-oc adm policy add-cluster-role-to-user cluster-reader system:serviceaccount:logging:sumologic-fluentd
+oc adm policy add-scc-to-user privileged system:serviceaccount:logging:fluentd
+oc adm policy add-cluster-role-to-user cluster-reader system:serviceaccount:logging:fluentd
 oc label node —all logging-sumologic-fluentd=true
 oc patch ds sumologic-fluentd -p "spec:
   template:
