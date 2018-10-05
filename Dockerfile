@@ -10,7 +10,7 @@ RUN [ -f /bin/entrypoint.sh ] && /bin/entrypoint.sh echo || : && \
     gem install fluent-plugin-systemd -v 0.3.1 && \
     gem install fluent-plugin-record-reformer -v 0.9.1 && \
     gem install fluent-plugin-kubernetes_metadata_filter -v 1.0.2 && \
-    gem install fluent-plugin-sumologic_output -v 1.1.1 && \
+    gem install fluent-plugin-sumologic_output -v 1.3.1 && \
     gem install fluent-plugin-concat -v 2.2.1 && \
     rm -rf /home/fluent/.gem/ruby/2.3.0/cache/*.gem && \
     gem sources -c && \
@@ -48,12 +48,16 @@ ENV TIME_KEY "time"
 ENV ADD_TIMESTAMP "true"
 ENV CONTAINER_LOGS_PATH "/mnt/log/containers/*.log"
 ENV ENABLE_STAT_WATCHER "true"
+ENV K8S_METADATA_FILTER_WATCH "true"
+ENV K8S_METADATA_FILTER_VERIFY_SSL "true"
+ENV K8S_METADATA_FILTER_BEARER_CACHE_SIZE "1000"
+ENV K8S_METADATA_FILTER_BEARER_CACHE_TTL "3600"
 
 COPY --from=builder /var/lib/gems /var/lib/gems
 
 COPY ./conf.d/ /fluentd/conf.d/
 COPY ./etc/* /fluentd/etc/
-COPY ./plugins/* /fluentd/plugins/
+COPY ./lib/fluent/plugin/* /fluentd/plugins/
 COPY ./entrypoint.sh /fluentd/
 
 ENTRYPOINT ["/fluentd/entrypoint.sh"]

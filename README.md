@@ -112,6 +112,15 @@ Environment | Variable Description
 `CONTAINER_LOGS_PATH`|Specify the path in_tail should watch for container logs. Default: `/mnt/log/containers/*.log`
 `PROXY_URI`|Add the uri of the proxy environment if present.
 `ENABLE_STAT_WATCHER`|Option to control the enabling of [stat_watcher](https://docs.fluentd.org/v1.0/articles/in_tail#enable_stat_watcher). Default: `true`
+`K8S_METADATA_FILTER_WATCH`|Option to control the enabling of [metadata filter plugin watch](https://github.com/fabric8io/fluent-plugin-kubernetes_metadata_filter#configuration). Default: `true`
+`K8S_METADATA_FILTER_CA_FILE`|Option to control the enabling of [metadata filter plugin ca_file](https://github.com/fabric8io/fluent-plugin-kubernetes_metadata_filter#configuration).
+`K8S_METADATA_FILTER_VERIFY_SSL`|Option to control the enabling of [metadata filter plugin verify_ssl](https://github.com/fabric8io/fluent-plugin-kubernetes_metadata_filter#configuration). Default: `true`
+`K8S_METADATA_FILTER_CLIENT_CERT`|Option to control the enabling of [metadata filter plugin client_cert](https://github.com/fabric8io/fluent-plugin-kubernetes_metadata_filter#configuration).
+`K8S_METADATA_FILTER_CLIENT_KEY`|Option to control the enabling of [metadata filter plugin client_key](https://github.com/fabric8io/fluent-plugin-kubernetes_metadata_filter#configuration).
+`K8S_METADATA_FILTER_BEARER_TOKEN_FILE`|Option to control the enabling of [metadata filter plugin bearer_token_file](https://github.com/fabric8io/fluent-plugin-kubernetes_metadata_filter#configuration).
+`K8S_METADATA_FILTER_BEARER_CACHE_SIZE`|Option to control the enabling of [metadata filter plugin cache_size](https://github.com/fabric8io/fluent-plugin-kubernetes_metadata_filter#configuration). Default: `1000`
+`K8S_METADATA_FILTER_BEARER_CACHE_TTL`|Option to control the enabling of [metadata filter plugin cache_ttl](https://github.com/fabric8io/fluent-plugin-kubernetes_metadata_filter#configuration). Default: `3600`
+
 
 The following table show which  environment variables affect which Fluentd sources.
 

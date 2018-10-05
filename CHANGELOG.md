@@ -1,5 +1,13 @@
 # Change Log
 
+## 1.2.0
+- change version scheme
+- [Add labels to k8s_metadata](https://github.com/SumoLogic/fluentd-kubernetes-sumologic/pull/83)
+- [Add source_host to conf.d/systemd/source.containers.conf](https://github.com/SumoLogic/fluentd-kubernetes-sumologic/pull/84)
+- minor refactoring and testing
+- upgrade fluent-plugin-sumologic_output to latest (1.3.1)
+- expose additional configuration options to provide more control over fluent-plugin-kubernetes_metadata_filter using default values (fixes #80 and #35)
+
 ## 1.18
 - add FluentD S3 Output plugin to give more output options.   
 
