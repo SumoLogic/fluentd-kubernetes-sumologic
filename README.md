@@ -445,3 +445,46 @@ If you need to also send data to S3 (i.e. as a secondary backup/audit trail) the
 You can replace the OOB configuration by creating a new Docker image from our image or by using a configmap to inject the new configuration to the pod.
 
 More details about the S3 plugin can be found [in the docs](https://docs.fluentd.org/v0.12/articles/out_s3).
+
+## Upgrading to v2.0.0
+
+In version 2.0.0, some legacy FluentD configuration has been removed that could lead to [duplicate logs being ingested into Sumo Logic](https://github.com/SumoLogic/fluentd-kubernetes-sumologic/issues/79).  These logs were control plane components.  This version was done as a major release as it breaks the current version of the [Kubernetes App](https://help.sumologic.com/Send-Data/Applications-and-Other-Data-Sources/Kubernetes/Install_the_Kubernetes_App_and_View_the_Dashboards) you may have installed in Sumo Logic.
+
+After upgrading to this version, you will need to reinstall the [Kubernetes App](https://help.sumologic.com/Send-Data/Applications-and-Other-Data-Sources/Kubernetes/Install_the_Kubernetes_App_and_View_the_Dashboards) in Sumo Logic. If you do not some of the panels in the dashboards will not render properly.
+
+If you have other content outside the app (Partitions, Scheduled Views, Field Extraction Rules or Scheduled Searches and Alerts), these may need to be updated after upgrading to v2.0.0.  The logs, while the same content, have a different format and the same parsing logic and metadata may not apply.
+
+The previous log format that is removed in v2.0.0:
+```json
+{
+   "timestamp": 1538776281387,
+   "severity": "I",
+   "pid": "1",
+   "source": "wrap.go:42",
+   "message": "GET /api/v1/namespaces/kube-system/endpoints/kube-scheduler: (3.514372ms) 200 [[kube-scheduler/v1.10.5 (linux/amd64) kubernetes/32ac1c9/leader-election] 127.0.0.1:46290]"
+}
+```
+Is replaced by the following version.  It is the same log line in a different format enriched with the same metadata the plugin applies to all pod logs.
+```json
+{
+   "timestamp": 1538776282152,
+   "log": "I1005 21:51:21.387204       1 wrap.go:42] GET /api/v1/namespaces/kube-system/endpoints/kube-scheduler: (3.514372ms) 200 [[kube-scheduler/v1.10.5 (linux/amd64) kubernetes/32ac1c9/leader-election] 127.0.0.1:46290]",
+   "stream": "stdout",
+   "time": "2018-10-05T21:51:21.387477546Z",
+   "docker": {
+      "container_id": "a442fd2982dfdc09ab6235941f8d661a0a5c8df5e1d21f23ff48a9923ac14739"
+   },
+   "kubernetes": {
+      "container_name": "kube-apiserver",
+      "namespace_name": "kube-system",
+      "pod_name": "kube-apiserver-ip-172-20-122-71.us-west-2.compute.internal",
+      "pod_id": "80fa5e13-c8b9-11e8-a456-0a8c1424d0d4",
+      "labels": {
+         "k8s-app": "kube-apiserver"
+      },
+      "host": "ip-172-20-122-71.us-west-2.compute.internal",
+      "master_url": "https://100.64.0.1:443/api",
+      "namespace_id": "9b9b75b7-aa16-11e8-9d62-06df85b5d3bc"
+   }
+}
+```

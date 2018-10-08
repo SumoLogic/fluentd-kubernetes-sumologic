@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    fluent-plugin-kubernetes_sumologic (1.2.0)
+    fluent-plugin-kubernetes_sumologic (2.0.0)
       fluentd (>= 0.14.12)
       httpclient (~> 2.8.0)
 
