@@ -2,6 +2,10 @@
 
 ## 2.0.0
 - remove duplicate control plane logs to resolve #79.  Considered a breaking change as this requires the Kubernetes App in Sumo Logic to be updated as it previously used these logs. Please [see here](README.md#upgrading-to-v200) for more information.
+- set kubernetes metadata filter plugin logging to warn to remove noisy logs
+- upgrade docker image to fluentd 1.2.6
+- add rewrite-tag-filter and prometheus plugins
+- test for existence of labels key in kubernetes metadata 
 
 ## 1.2.0
 - change version scheme
