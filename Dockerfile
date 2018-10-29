@@ -19,7 +19,7 @@ RUN [ -f /bin/entrypoint.sh ] && /bin/entrypoint.sh echo || : && \
     apt-get remove --purge -y build-essential ruby-dev libffi-dev libsystemd-dev && \
     rm -rf /var/lib/apt/lists/*
 
-FROM fluent/fluentd:v1.1.3-debian
+FROM fluent/fluentd:v1.2.6-debian
 
 WORKDIR /home/fluent
 ENV PATH /home/fluent/.gem/ruby/2.3.0/bin:$PATH
