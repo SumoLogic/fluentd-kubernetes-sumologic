@@ -81,7 +81,10 @@ module Fluent::Plugin
           :source_host => kubernetes["host"],
         }
 
-        kubernetes["labels"].each { |k, v| k8s_metadata["label:#{k}".to_sym] = v }
+
+        if kubernetes.has_key? "labels"
+          kubernetes["labels"].each { |k, v| k8s_metadata["label:#{k}".to_sym] = v }
+        end
         k8s_metadata.default = "undefined"
 
         annotations = kubernetes.fetch("annotations", {})
