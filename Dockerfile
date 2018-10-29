@@ -1,4 +1,4 @@
-FROM fluent/fluentd:v1.1.3-debian AS builder
+FROM fluent/fluentd:v1.2.6-debian AS builder
 
 ENV PATH /home/fluent/.gem/ruby/2.3.0/bin:$PATH
 
@@ -12,6 +12,7 @@ RUN [ -f /bin/entrypoint.sh ] && /bin/entrypoint.sh echo || : && \
     gem install fluent-plugin-kubernetes_metadata_filter -v 1.0.2 && \
     gem install fluent-plugin-sumologic_output -v 1.3.1 && \
     gem install fluent-plugin-concat -v 2.2.1 && \
+    gem install fluent-plugin-rewrite-tag-filter -v 2.1.0 && \m
     rm -rf /home/fluent/.gem/ruby/2.3.0/cache/*.gem && \
     gem sources -c && \
     apt-get remove --purge -y build-essential ruby-dev libffi-dev libsystemd-dev && \
