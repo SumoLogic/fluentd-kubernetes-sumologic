@@ -4,7 +4,7 @@ $LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)
 
 Gem::Specification.new do |gem|
   gem.name          = "fluent-plugin-kubernetes_sumologic"
-  gem.version       = "1.2.0"
+  gem.version       = "2.0.0"
   gem.authors       = ["Frank Reno"]
   gem.email         = ["frank.reno@me.com"]
   gem.description   = %q{FluentD plugin to extract logs from Kubernetes clusters, enrich and ship to Sumo logic.}
