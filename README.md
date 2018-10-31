@@ -170,6 +170,33 @@ spec:
         - containerPort: 80
 ```
 
+### Reduce Kubernetes Metadata using annotations
+You can also use the "sumologic.com/kubernetes_meta_reduce" annotation to exclude `pod_id`, 
+`container_id`, `namespace_id`, `namespace_name`, `master_url` and `labels` from Kubernetes Metadata.
+```
+apiVersion: v1
+kind: ReplicationController
+metadata:
+  name: nginx
+spec:
+  replicas: 1
+  selector:
+    app: mywebsite
+  template:
+    metadata:
+      name: nginx
+      labels:
+        app: mywebsite
+      annotations:
+        sumologic.com/kubernetes_meta_reduce: "true"
+    spec:
+      containers:
+      - name: nginx
+        image: nginx
+        ports:
+        - containerPort: 80
+```
+
 ### Exclude data using annotations
 
 You can also use the `sumologic.com/exclude` annotation to exclude data from Sumo. This data is sent to FluentD, but not to Sumo.
