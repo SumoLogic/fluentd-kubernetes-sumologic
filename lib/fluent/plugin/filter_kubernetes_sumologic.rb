@@ -33,7 +33,6 @@ module Fluent::Plugin
       # Set the sumo metadata fields
       sumo_metadata = record["_sumo_metadata"] || {}
       record["_sumo_metadata"] = sumo_metadata
-
       sumo_metadata[:log_format] = @log_format
       sumo_metadata[:host] = @source_host if @source_host
       sumo_metadata[:source] = @source_name if @source_name
@@ -86,7 +85,6 @@ module Fluent::Plugin
         k8s_metadata.default = "undefined"
 
         annotations = kubernetes.fetch("annotations", {})
-
         if annotations["sumologic.com/include"] == "true"
           include = true
         else
@@ -156,8 +154,7 @@ module Fluent::Plugin
           record.delete("docker")
           record.delete("kubernetes")
         end
-
-        if annotations["sumologic.com/kubernetes_meta_reduce"] == "true" && @kubernetes_meta_reduce
+        if annotations["sumologic.com/kubernetes_meta_reduce"] == "true"
           record.delete("docker")
           record["kubernetes"].delete("pod_id")
           record["kubernetes"].delete("namespace_id")
