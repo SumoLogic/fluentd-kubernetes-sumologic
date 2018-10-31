@@ -250,6 +250,57 @@ class SumoContainerOutputTest < Test::Unit::TestCase
     assert_equal(d.filtered_records[0], expected)
   end
 
+  test "test_kubernetes_meta_reduce" do
+    conf = %{
+      kubernetes_meta_reduce true
+    }
+    d = create_driver(conf)
+    time = @time
+    input = {
+        "timestamp" => 1538677347823,
+        "log" => "some message",
+        "stream" => "stdout",
+        "docker" => {
+            "container_id" => "5c280b6ad5abec32e9af729295c20f60fbeadf3ba16fda2d121f87228e6822e0",
+        },
+        "kubernetes" => {
+            "container_name" => "log-format-labs",
+            "namespace_name" => "default",
+            "pod_name" => "log-format-labs-54575ccdb9-9d677",
+            "pod_id" => "170af806-c801-11e8-9009-025000000001",
+            "labels" => {
+                "pod-template-hash" => "1013177865",
+                "run" => "log-format-labs"
+            },
+            "annotations" => {
+                "sumologic.com/kubernetes_meta_reduce" => "true",
+            },
+            "host" => "docker-for-desktop",
+        },
+    }
+    d.run do
+      d.feed("filter.test", time, input)
+    end
+    expected = {
+        "timestamp" => 1538677347823,
+        "log" => "some message",
+        "stream" => "stdout",
+        "kubernetes" => {
+            "container_name" => "log-format-labs",
+            "pod_name" => "log-format-labs-54575ccdb9-9d677",
+            "host" => "docker-for-desktop",
+        },
+        "_sumo_metadata" => {
+            :category => "kubernetes/default/log/format/labs/54575ccdb9",
+            :host => "",
+            :log_format => "json",
+            :source => "default.log-format-labs-54575ccdb9-9d677.log-format-labs",
+        },
+    }
+    assert_equal(1, d.filtered_records.size)
+    assert_equal(d.filtered_records[0], expected)
+  end
+
   test "test_log_format_json_merge" do
     conf = %{
       log_format json_merge
