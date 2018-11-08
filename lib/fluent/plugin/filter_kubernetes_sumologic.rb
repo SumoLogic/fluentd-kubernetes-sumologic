@@ -158,7 +158,12 @@ module Fluent::Plugin
           record.delete("docker")
           record.delete("kubernetes")
         end
-
+        if ENV["ADD_STREAM"] == "false"
+          record.delete("stream")
+        end
+        if ENV["ADD_TIME"] == "false"
+          record.delete("time")
+        end
         # Strip sumologic.com annotations
         kubernetes.delete("annotations") if annotations
       end
