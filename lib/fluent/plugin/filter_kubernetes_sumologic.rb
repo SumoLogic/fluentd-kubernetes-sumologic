@@ -32,6 +32,7 @@ module Fluent::Plugin
       # Set the sumo metadata fields
       sumo_metadata = record["_sumo_metadata"] || {}
       record["_sumo_metadata"] = sumo_metadata
+      log_fields = {}
 
       sumo_metadata[:log_format] = @log_format
       sumo_metadata[:host] = @source_host if @source_host
@@ -68,6 +69,10 @@ module Fluent::Plugin
             return nil
           end
         end
+      end
+
+      if @log_format == "fields" and record.key?("docker") and not record.fetch("docker").nil?
+        record["docker"].each {|k, v| log_fields[k] = v}
       end
 
       # Allow fields to be overridden by annotations
@@ -161,6 +166,16 @@ module Fluent::Plugin
 
         # Strip sumologic.com annotations
         kubernetes.delete("annotations") if annotations
+
+        if @log_format == "fields"
+          k8s_metadata.each {|k, v| log_fields[k] = v}
+        end
+      end
+
+      if @log_format == "fields" and not log_fields.nil?
+        sumo_metadata[:fields] = log_fields.map{|k,v| "#{k}=#{v}"}.join(',')
+        record.delete("docker")
+        record.delete("kubernetes")
       end
       record
     end
