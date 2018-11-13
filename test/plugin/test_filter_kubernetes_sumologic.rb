@@ -194,10 +194,11 @@ class SumoContainerOutputTest < Test::Unit::TestCase
   end
 
   test "test_add_stream" do
-    conf = %{}
+    conf = %{
+      add_stream false
+    }
     d = create_driver(conf)
     time = @time
-    ENV["ADD_STREAM"] = "false"
     input = {
         "timestamp" => 1538677347823,
         "log" => "some message",
@@ -222,7 +223,6 @@ class SumoContainerOutputTest < Test::Unit::TestCase
     d.run do
       d.feed("filter.test", time, input)
     end
-    ENV["ADD_STREAM"] = nil
     expected = {
         "timestamp" => 1538677347823,
         "log" => "some message",
