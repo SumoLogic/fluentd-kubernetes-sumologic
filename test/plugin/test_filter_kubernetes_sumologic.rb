@@ -122,7 +122,7 @@ class SumoContainerOutputTest < Test::Unit::TestCase
         :host => "",
         :log_format => "fields",
         :source => "default.log-format-labs-54575ccdb9-9d677.log-format-labs",
-        :fields => "container_id=5c280b6ad5abec32e9af729295c20f60fbeadf3ba16fda2d121f87228e6822e0,namespace=default,pod=log-format-labs-54575ccdb9-9d677,container=log-format-labs,source_host=docker-for-desktop,label:pod-template-hash=1013177865,label:run=log-format-labs,pod_name=log-format-labs-54575ccdb9",
+        :fields => "container_id=5c280b6ad5abec32e9af729295c20f60fbeadf3ba16fda2d121f87228e6822e0,namespace=default,pod=log-format-labs-54575ccdb9-9d677,container=log-format-labs,source_host=docker-for-desktop,pod-template-hash=1013177865,run=log-format-labs,pod_name=log-format-labs-54575ccdb9",
       },
     }
     assert_equal(1, d.filtered_records.size)
