@@ -2,4 +2,4 @@ lang: ruby
 
 script: bundle exec rake
 
-rvm: 2.3
+rvm: 2.3.7
