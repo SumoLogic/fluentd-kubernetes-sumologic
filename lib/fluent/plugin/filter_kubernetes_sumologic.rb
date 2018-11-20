@@ -168,7 +168,7 @@ module Fluent::Plugin
         kubernetes.delete("annotations") if annotations
 
         if @log_format == "fields"
-          k8s_metadata.each {|k, v| log_fields["#{k}".delete_prefix("label:")] = v}
+          k8s_metadata.each {|k, v| log_fields["#{k}".sub(/^label:/, '')] = v}
         end
       end
 
