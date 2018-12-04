@@ -28,7 +28,7 @@ module Fluent::Plugin
       true if Float(string) rescue false
     end
 
-    def strip_dynamic_bits(k8s_metadata)
+    def sanitize_pod_name(k8s_metadata)
         # Strip out dynamic bits from pod name.
         # NOTE: Kubernetes deployments append a template hash.
         # At the moment this can be in 3 different forms:
@@ -47,8 +47,8 @@ module Fluent::Plugin
     end
 
     def to_hash(pod_template_hash)
-      # Convert the pod_template_hash to an alphanumeric string using the same
-      # logic Kubernetes uses at https://github.com/kubernetes/apimachinery/blob/master/pkg/util/rand/rand.go#L119
+      # Convert the pod_template_hash to an alphanumeric string using the same logic Kubernetes
+      # uses at https://github.com/kubernetes/apimachinery/blob/18a5ff3097b4b189511742e39151a153ee16988b/pkg/util/rand/rand.go#L119
       alphanums = "bcdfghjklmnpqrstvwxz2456789"
       pod_template_hash.each_byte.map { |i| alphanums[i.to_i % alphanums.length] }.join("")
     end
@@ -144,7 +144,7 @@ module Fluent::Plugin
           end
         end
 
-        strip_dynamic_bits(k8s_metadata)
+        sanitize_pod_name(k8s_metadata)
 
         if annotations["sumologic.com/exclude"] == "true"
           return nil
