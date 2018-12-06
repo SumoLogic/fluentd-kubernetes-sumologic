@@ -28,6 +28,31 @@ module Fluent::Plugin
       true if Float(string) rescue false
     end
 
+    def sanitize_pod_name(k8s_metadata)
+        # Strip out dynamic bits from pod name.
+        # NOTE: Kubernetes deployments append a template hash.
+        # At the moment this can be in 3 different forms:
+        #   1) pre-1.8: numeric in pod_template_hash and pod_parts[-2]
+        #   2) 1.8-1.11: numeric in pod_template_hash, hash in pod_parts[-2]
+        #   3) post-1.11: hash in pod_template_hash and pod_parts[-2]
+
+        pod_parts = k8s_metadata[:pod].split("-")
+        pod_template_hash = k8s_metadata[:"label:pod-template-hash"]
+        if (pod_template_hash == pod_parts[-2] ||
+            to_hash(pod_template_hash) == pod_parts[-2])
+          k8s_metadata[:pod_name] = pod_parts[0..-3].join("-")
+        else
+          k8s_metadata[:pod_name] = pod_parts[0..-2].join("-")
+        end
+    end
+
+    def to_hash(pod_template_hash)
+      # Convert the pod_template_hash to an alphanumeric string using the same logic Kubernetes
+      # uses at https://github.com/kubernetes/apimachinery/blob/18a5ff3097b4b189511742e39151a153ee16988b/pkg/util/rand/rand.go#L119
+      alphanums = "bcdfghjklmnpqrstvwxz2456789"
+      pod_template_hash.each_byte.map { |i| alphanums[i.to_i % alphanums.length] }.join("")
+    end
+
     def filter(tag, time, record)
       # Set the sumo metadata fields
       sumo_metadata = record["_sumo_metadata"] || {}
@@ -119,14 +144,7 @@ module Fluent::Plugin
           end
         end
 
-        # Strip out dynamic bits from pod name.
-        # NOTE: Kubernetes deployments append a template hash.
-        pod_parts = k8s_metadata[:pod].split("-")
-        if is_number?(pod_parts[-2])
-          k8s_metadata[:pod_name] = pod_parts[0..-3].join("-")
-        else
-          k8s_metadata[:pod_name] = pod_parts[0..-2].join("-")
-        end
+        sanitize_pod_name(k8s_metadata)
 
         if annotations["sumologic.com/exclude"] == "true"
           return nil
