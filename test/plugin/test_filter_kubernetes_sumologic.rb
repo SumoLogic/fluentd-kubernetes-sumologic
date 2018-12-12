@@ -460,7 +460,7 @@ class SumoContainerOutputTest < Test::Unit::TestCase
             "host" => "docker-for-desktop",
         },
         "_sumo_metadata" => {
-            :category => "kubernetes/default/log/format/labs/54575ccdb9",
+            :category => "kubernetes/default/log/format/labs",
             :host => "",
             :log_format => "json",
             :source => "default.log-format-labs-54575ccdb9-9d677.log-format-labs",
