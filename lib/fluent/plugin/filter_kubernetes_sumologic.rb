@@ -157,7 +157,7 @@ module Fluent::Plugin
           record.delete("docker")
           record.delete("kubernetes")
         end
-        if annotations["sumologic.com/kubernetes_meta_reduce"] == "true"
+        if annotations["sumologic.com/kubernetes_meta_reduce"] == "true" || annotations["sumologic.com/kubernetes_meta_reduce"].nil? && @kubernetes_meta_reduce == true
           record.delete("docker")
           record["kubernetes"].delete("pod_id")
           record["kubernetes"].delete("namespace_id")
