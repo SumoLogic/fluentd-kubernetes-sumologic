@@ -19,6 +19,8 @@ module Fluent::Plugin
     config_param :exclude_pod_regex, :string, :default => ""
     config_param :exclude_priority_regex, :string, :default => ""
     config_param :exclude_unit_regex, :string, :default => ""
+    config_param :add_stream, :bool, :default => true
+    config_param :add_time, :bool, :default => true
 
     def configure(conf)
       super
@@ -176,7 +178,12 @@ module Fluent::Plugin
           record.delete("docker")
           record.delete("kubernetes")
         end
-
+        if @add_stream == false
+          record.delete("stream")
+        end
+        if @add_time == false
+          record.delete("time")
+        end
         # Strip sumologic.com annotations
         kubernetes.delete("annotations") if annotations
       end
