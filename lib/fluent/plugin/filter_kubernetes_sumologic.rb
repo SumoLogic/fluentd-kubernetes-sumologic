@@ -6,6 +6,7 @@ module Fluent::Plugin
     Fluent::Plugin.register_filter("kubernetes_sumologic", self)
 
     config_param :kubernetes_meta, :bool, :default => true
+    config_param :kubernetes_meta_reduce, :bool, :default => false
     config_param :source_category, :string, :default => "%{namespace}/%{pod_name}"
     config_param :source_category_replace_dash, :string, :default => "/"
     config_param :source_category_prefix, :string, :default => "kubernetes/"
@@ -32,7 +33,6 @@ module Fluent::Plugin
       # Set the sumo metadata fields
       sumo_metadata = record["_sumo_metadata"] || {}
       record["_sumo_metadata"] = sumo_metadata
-
       sumo_metadata[:log_format] = @log_format
       sumo_metadata[:host] = @source_host if @source_host
       sumo_metadata[:source] = @source_name if @source_name
@@ -88,7 +88,6 @@ module Fluent::Plugin
         k8s_metadata.default = "undefined"
 
         annotations = kubernetes.fetch("annotations", {})
-
         if annotations["sumologic.com/include"] == "true"
           include = true
         else
@@ -157,6 +156,15 @@ module Fluent::Plugin
         if annotations["sumologic.com/kubernetes_meta"] == "false" || !@kubernetes_meta
           record.delete("docker")
           record.delete("kubernetes")
+        end
+        if annotations["sumologic.com/kubernetes_meta_reduce"] == "true"
+          record.delete("docker")
+          record["kubernetes"].delete("pod_id")
+          record["kubernetes"].delete("namespace_id")
+          record["kubernetes"].delete("labels")
+          record["kubernetes"].delete("master_url")
+          record["kubernetes"].delete("namespace_name")
+          record["kubernetes"].delete("annotations")
         end
 
         # Strip sumologic.com annotations
