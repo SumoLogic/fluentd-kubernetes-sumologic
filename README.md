@@ -100,6 +100,7 @@ Environment | Variable Description
 `FLUENTD_USER_CONFIG_DIR`|A directory of user-defined fluentd configuration files, which must be in the  `*.conf` directory in the container.
 `FLUSH_INTERVAL` |How frequently to push logs to Sumo.<br/><br/>Default: `5s`
 `KUBERNETES_META`|Include or exclude Kubernetes metadata such as `namespace` and `pod_name` if using JSON log format. <br/><br/>Default: `true`
+`KUBERNETES_META_REDUCE`| Reduces Kubernetes metadata, check [Reducing Kubernetes Metadata](#####reduce-kubernetes-metadata-using-annotations). <br></br>Default: `false`
 `LOG_FORMAT`|Format in which to post logs to Sumo. Allowable values:<br/><br/>`text`—Logs will appear in SumoLogic in text format.<br/>`json`—Logs will appear in SumoLogic in json format.<br/>`json_merge`—Same as json but if the container logs in json format to stdout it will merge in the container json log at the root level and remove the log field.<br/><br/>Default: `json`
 `MULTILINE_START_REGEXP`|The regular expression for the `concat` plugin to use when merging multi-line messages. Defaults to Julian dates, for example, Jul 29, 2017.
 `NUM_THREADS`|Set the number of HTTP threads to Sumo. It might be necessary to do so in heavy-logging clusters. <br/><br/>Default: `1`
@@ -144,7 +145,7 @@ The following table show which  environment variables affect which Fluentd sourc
 When dealing with large volumes of data (TB's from what we have seen), FluentD may stop processing logs, but continue to run.  This issue seems to be caused by the [scalability of the inotify process](https://github.com/fluent/fluentd/issues/1630) that is packaged with the FluentD in_tail plugin.  If you encounter this situation, setting the `ENABLE_STAT_WATCHER` to `false` should resolve this issue.
 
 ### Override environment variables using annotations
-You can override the `LOG_FORMAT`, `SOURCE_CATEGORY` and `SOURCE_NAME` environment variables, per pod, using [Kubernetes annotations](https://kubernetes.io/docs/concepts/overview/working-with-objects/annotations/). For example:
+You can override the `LOG_FORMAT`, `KUBERNETES_META_REDUCE`, `SOURCE_CATEGORY` and `SOURCE_NAME` environment variables, per pod, using [Kubernetes annotations](https://kubernetes.io/docs/concepts/overview/working-with-objects/annotations/). For example:
 
 ```
 apiVersion: v1
@@ -162,8 +163,36 @@ spec:
         app: mywebsite
       annotations:
         sumologic.com/format: "text"
+        sumologic.com/kubernetes_meta_reduce: "true"
         sumologic.com/sourceCategory: "mywebsite/nginx"
         sumologic.com/sourceName: "mywebsite_nginx"
+    spec:
+      containers:
+      - name: nginx
+        image: nginx
+        ports:
+        - containerPort: 80
+```
+
+### Reduce Kubernetes Metadata using annotations
+You can also use the "sumologic.com/kubernetes_meta_reduce" annotation to exclude `pod_id`, 
+`container_id`, `namespace_id`, `namespace_name`, `master_url` and `labels` from Kubernetes Metadata.
+```
+apiVersion: v1
+kind: ReplicationController
+metadata:
+  name: nginx
+spec:
+  replicas: 1
+  selector:
+    app: mywebsite
+  template:
+    metadata:
+      name: nginx
+      labels:
+        app: mywebsite
+      annotations:
+        sumologic.com/kubernetes_meta_reduce: "true"
     spec:
       containers:
       - name: nginx
