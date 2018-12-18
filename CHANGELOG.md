@@ -1,5 +1,10 @@
 # Change Log
 
+## 2.1.0
+- [Correctly remove the dynamic replicaset from the pod_name](https://github.com/SumoLogic/fluentd-kubernetes-sumologic/pull/100)
+- [Control adding time and stream](https://github.com/SumoLogic/fluentd-kubernetes-sumologic/pull/96)
+- [Reduce k8s metadata logs](https://github.com/SumoLogic/fluentd-kubernetes-sumologic/pull/92)
+
 ## 2.0.0
 - remove duplicate control plane logs to resolve #79.  Considered a breaking change as this requires the Kubernetes App in Sumo Logic to be updated as it previously used these logs. Please [see here](README.md#upgrading-to-v200) for more information.
 - set kubernetes metadata filter plugin logging to warn to remove noisy logs
