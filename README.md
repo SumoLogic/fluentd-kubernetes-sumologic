@@ -126,6 +126,7 @@ Environment | Variable Description
 `K8S_METADATA_FILTER_BEARER_CACHE_SIZE`|Option to control the enabling of [metadata filter plugin cache_size](https://github.com/fabric8io/fluent-plugin-kubernetes_metadata_filter#configuration). Default: `1000`
 `K8S_METADATA_FILTER_BEARER_CACHE_TTL`|Option to control the enabling of [metadata filter plugin cache_ttl](https://github.com/fabric8io/fluent-plugin-kubernetes_metadata_filter#configuration). Default: `3600`
 `K8S_NODE_NAME`|If set, improves [caching of pod metadata](https://github.com/fabric8io/fluent-plugin-kubernetes_metadata_filter#environment-variables-for-kubernetes) and reduces API calls. 
+`VERIFY_SSL`|Verify ssl certificate of sumologic endpoint. Default: `true`
 
 
 The following table show which  environment variables affect which Fluentd sources.
