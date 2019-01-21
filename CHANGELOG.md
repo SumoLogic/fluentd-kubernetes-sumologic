@@ -1,5 +1,9 @@
 # Change Log
 
+## 2.2.0
+- bump base image to 1.3.2
+- upgrade Sumo Logic FluentD Output plugin to 1.4.0, expose timestamp_key configuration
+
 ## 2.1.0
 - [Correctly remove the dynamic replicaset from the pod_name](https://github.com/SumoLogic/fluentd-kubernetes-sumologic/pull/100)
 - [Control adding time and stream](https://github.com/SumoLogic/fluentd-kubernetes-sumologic/pull/96)

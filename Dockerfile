@@ -1,4 +1,4 @@
-FROM fluent/fluentd:v1.2.6-debian AS builder
+FROM fluent/fluentd:v1.3.2-debian AS builder
 
 ENV PATH /home/fluent/.gem/ruby/2.3.0/bin:$PATH
 
@@ -10,7 +10,7 @@ RUN [ -f /bin/entrypoint.sh ] && /bin/entrypoint.sh echo || : && \
     gem install fluent-plugin-systemd -v 0.3.1 && \
     gem install fluent-plugin-record-reformer -v 0.9.1 && \
     gem install fluent-plugin-kubernetes_metadata_filter -v 1.0.2 && \
-    gem install fluent-plugin-sumologic_output -v 1.3.1 && \
+    gem install fluent-plugin-sumologic_output -v 1.4.0 && \
     gem install fluent-plugin-concat -v 2.2.1 && \
     gem install fluent-plugin-rewrite-tag-filter -v 2.1.0 && \
     gem install fluent-plugin-prometheus -v 1.1.0 && \
@@ -19,7 +19,7 @@ RUN [ -f /bin/entrypoint.sh ] && /bin/entrypoint.sh echo || : && \
     apt-get remove --purge -y build-essential ruby-dev libffi-dev libsystemd-dev && \
     rm -rf /var/lib/apt/lists/*
 
-FROM fluent/fluentd:v1.2.6-debian
+FROM fluent/fluentd:v1.3.2-debian
 
 WORKDIR /home/fluent
 ENV PATH /home/fluent/.gem/ruby/2.3.0/bin:$PATH
@@ -49,6 +49,7 @@ ENV CONCAT_SEPARATOR ""
 ENV AUDIT_LOG_PATH "/mnt/log/kube-apiserver-audit.log"
 ENV TIME_KEY "time"
 ENV ADD_TIMESTAMP "true"
+ENV TIMESTAMP_KEY "timestamp"
 ENV ADD_STREAM "true"
 ENV ADD_TIME "true"
 ENV CONTAINER_LOGS_PATH "/mnt/log/containers/*.log"
