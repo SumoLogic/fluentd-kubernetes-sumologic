@@ -458,6 +458,7 @@ class SumoContainerOutputTest < Test::Unit::TestCase
             "container_name" => "log-format-labs",
             "pod_name" => "log-format-labs-54575ccdb9-9d677",
             "host" => "docker-for-desktop",
+            "namespace_name" => "default",
         },
         "_sumo_metadata" => {
             :category => "kubernetes/default/log/format/labs",
@@ -506,6 +507,7 @@ class SumoContainerOutputTest < Test::Unit::TestCase
             "container_name" => "log-format-labs",
             "pod_name" => "log-format-labs-54575ccdb9-9d677",
             "host" => "docker-for-desktop",
+            "namespace_name" => "default",
         },
         "_sumo_metadata" => {
             :category => "kubernetes/default/log/format/labs",
