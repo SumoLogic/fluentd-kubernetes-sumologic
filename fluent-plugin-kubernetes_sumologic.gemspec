@@ -20,7 +20,7 @@ Gem::Specification.new do |gem|
 
   gem.required_ruby_version = '>= 2.0.0'
 
-  gem.add_development_dependency "bundler", "~> 1.3"
+  gem.add_development_dependency "bundler", "~> 2"
   gem.add_development_dependency "rake"
   gem.add_development_dependency 'test-unit', '~> 3.1.0'
   gem.add_development_dependency "codecov", ">= 0.1.10"

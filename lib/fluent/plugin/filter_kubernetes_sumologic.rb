@@ -183,7 +183,6 @@ module Fluent::Plugin
           record["kubernetes"].delete("namespace_id")
           record["kubernetes"].delete("labels")
           record["kubernetes"].delete("master_url")
-          record["kubernetes"].delete("namespace_name")
           record["kubernetes"].delete("annotations")
         end
         if @add_stream == false
