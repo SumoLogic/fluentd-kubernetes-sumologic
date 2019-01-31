@@ -1,5 +1,9 @@
 # Change Log
 
+## 2.3.0
+- Polish "reduce metadata" feature with keeping `namespace_name` [PR #108](https://github.com/SumoLogic/fluentd-kubernetes-sumologic/pull/108)
+- Bug fix - missing params in `containers.**` [PR #109](https://github.com/SumoLogic/fluentd-kubernetes-sumologic/pull/109)
+
 ## 2.2.0
 - bump base image to 1.3.2
 - upgrade Sumo Logic FluentD Output plugin to 1.4.0, expose timestamp_key configuration
