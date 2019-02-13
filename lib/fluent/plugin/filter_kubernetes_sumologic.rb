@@ -104,6 +104,7 @@ module Fluent::Plugin
         k8s_metadata = {
           :namespace => kubernetes["namespace_name"],
           :pod => kubernetes["pod_name"],
+          :pod_id => kubernetes['pod_id'],
           :container => kubernetes["container_name"],
           :source_host => kubernetes["host"],
         }

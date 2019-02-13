@@ -388,6 +388,7 @@ The following Kubernetes metadata is available for string templating:
 | `%{namespace}`   | Namespace name                                          |
 | `%{pod}`         | Full pod name (e.g. `travel-products-4136654265-zpovl`) | 
 | `%{pod_name}`    | Friendly pod name (e.g. `travel-products`)              | 
+| `%{pod_id}`      | The pod's uid (a UUID)                                  | 
 | `%{container}`   | Container name                                          |
 | `%{source_host}` | Host                                                    |
 | `%{label:foo}`   | The value of label `foo`                                | 
