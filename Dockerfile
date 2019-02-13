@@ -11,7 +11,7 @@ RUN [ -f /bin/entrypoint.sh ] && /bin/entrypoint.sh echo || : && \
     gem install fluent-plugin-record-reformer -v 0.9.1 && \
     gem install fluent-plugin-kubernetes_metadata_filter -v 1.0.2 && \
     gem install fluent-plugin-sumologic_output -v 1.4.0 && \
-    gem install fluent-plugin-concat -v 2.2.1 && \
+    gem install fluent-plugin-concat -v 2.3.0 && \
     gem install fluent-plugin-rewrite-tag-filter -v 2.1.0 && \
     gem install fluent-plugin-prometheus -v 1.1.0 && \
     rm -rf /home/fluent/.gem/ruby/2.3.0/cache/*.gem && \
