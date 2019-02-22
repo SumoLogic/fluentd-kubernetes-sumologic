@@ -1,0 +1,107 @@
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: sumologic
+---
+apiVersion: apps/v1beta1
+kind: Deployment
+metadata:
+  name: fluentd-deployment
+  namespace: sumologic
+  labels:
+    app: fluentd-deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: fluentd-deployment
+  template:
+    metadata:
+      labels:
+        app: fluentd-deployment
+        name: fluentd-deployment
+    spec:
+      serviceAccountName: fluentd-metrics
+      volumes:
+      - name: pos-files
+        hostPath:
+          path: /var/run/fluentd-pos
+          type: ""
+      containers:
+      - name: fluentd-http-endpoint
+        image: leisumo/sumo-fluent-k8s:latest
+        imagePullPolicy: Always
+        resources:
+          limits:
+            memory: 2Gi
+            cpu: "200m"
+          requests:
+            memory: 2Gi
+            cpu: "200m"
+        ports:
+        - containerPort: 9888
+        volumeMounts:
+        - name: pos-files
+          mountPath: /mnt/pos/
+        env:
+        - name: SUMO_ENDPOINT_METRIC
+          value: "https://nite-events.sumologic.net/receiver/v1/http/ZaVnC4dhaV0-0Jyk9CxrE3gcQwDlMoQkMtt3rPP-eI9Pzbgg7wq9PWjiY6g5YikWhehOmRdvoA94hi4I7ib0PKMS52PuyNHWDZ3Izl5F35MKct78gzlxsw=="
+
+---
+# Service for listening port 9888 traffic
+apiVersion: v1
+kind: Service
+metadata:
+  name: fluentd-deployment-service
+  namespace: sumologic
+  labels:
+    app: fluentd-deployment
+spec:
+  type: LoadBalancer
+  selector:
+    app: fluentd-deployment
+  ports:
+  - name: http-endpoint
+    port: 9888
+    protocol: TCP
+---
+apiVersion: rbac.authorization.k8s.io/v1beta1
+kind: ClusterRoleBinding
+metadata:
+  name: fluentd-metrics
+subjects:
+- kind: ServiceAccount
+  name: fluentd-metrics
+  namespace: sumologic
+roleRef:
+  kind: ClusterRole
+  name: fluentd-metrics
+  apiGroup: rbac.authorization.k8s.io
+---
+apiVersion: rbac.authorization.k8s.io/v1beta1
+kind: ClusterRole
+metadata:
+  name: fluentd-metrics
+  labels:
+    app: fluentd-deployment
+rules:
+- apiGroups: [""]
+  resources:
+  - nodes
+  - namespaces
+  - events
+  - pods
+  - replicasets
+  - statefulsets
+  - deployments
+  verbs: ["get", "list", "watch"]
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: fluentd-metrics
+  namespace: sumologic
+  labels:
+    app: fluentd-deployment
+---
