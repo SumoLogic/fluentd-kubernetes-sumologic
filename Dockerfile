@@ -31,6 +31,12 @@ RUN mkdir -p /fluentd/conf.d && \
     mkdir -p /fluentd/etc && \
     mkdir -p /fluentd/plugins
 
+COPY --from=builder /var/lib/gems /var/lib/gems
+COPY ./fluent-plugin-kubernetes_sumologic*.gem /var/lib/gems
+COPY ./conf.d/ /fluentd/conf.d/
+COPY ./etc/* /fluentd/etc/
+COPY ./entrypoint.sh /fluentd/
+
 # Default settings
 ENV LOG_FORMAT "json"
 ENV FLUSH_INTERVAL "5s"
@@ -59,12 +65,5 @@ ENV K8S_METADATA_FILTER_VERIFY_SSL "true"
 ENV K8S_METADATA_FILTER_BEARER_CACHE_SIZE "1000"
 ENV K8S_METADATA_FILTER_BEARER_CACHE_TTL "3600"
 ENV VERIFY_SSL "true"
-
-COPY --from=builder /var/lib/gems /var/lib/gems
-
-COPY ./conf.d/ /fluentd/conf.d/
-COPY ./etc/* /fluentd/etc/
-COPY ./lib/fluent/plugin/* /fluentd/plugins/
-COPY ./entrypoint.sh /fluentd/
 
 ENTRYPOINT ["/fluentd/entrypoint.sh"]
