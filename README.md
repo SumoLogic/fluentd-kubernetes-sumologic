@@ -1,4 +1,4 @@
-[![Build Status](https://travis-ci.org/SumoLogic/fluentd-kubernetes-sumologic.svg?branch=master)](https://travis-ci.org/SumoLogic/fluentd-kubernetes-sumologic) [![contributions welcome](https://img.shields.io/badge/contributions-welcome-brightgreen.svg?style=flat)](https://github.com/SumoLogic/fluentd-output-sumologic/issues)
+[![Build Status](https://travis-ci.org/SumoLogic/fluentd-kubernetes-sumologic.svg?branch=master)](https://travis-ci.org/SumoLogic/fluentd-kubernetes-sumologic) [![Gem Version](https://badge.fury.io/rb/fluent-plugin-kubernetes_sumologic.svg)](https://badge.fury.io/rb/fluent-plugin-kubernetes_sumologic) [![Docker Pulls](https://img.shields.io/docker/pulls/sumologic/fluentd-kubernetes-sumologic.svg)](https://hub.docker.com/r/sumologic/fluentd-kubernetes-sumologic) [![contributions welcome](https://img.shields.io/badge/contributions-welcome-brightgreen.svg?style=flat)](https://github.com/SumoLogic/fluentd-output-sumologic/issues)
 
 This page describes the Sumo Kubernetes [Fluentd](http://www.fluentd.org/) plugin.
 
