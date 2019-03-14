@@ -1,6 +1,8 @@
 lang: ruby
 services: docker
-before_install: gem install bundler
+before_install:
+  - rm -f ./Gemfile.lock
+  - gem install bundler
 script: ci/build.sh
 deploy:
   provider: rubygems
