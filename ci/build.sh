@@ -22,7 +22,7 @@ echo "Build gem $PLUGIN_NAME $VERSION..."
 gem build $PLUGIN_NAME
 
 echo "Building docker image with $DOCKER_TAG:$VERSION and $DOCKER_TAG:latest in `pwd`..."
-docker build . -f ./Dockerfile -t $DOCKER_TAG:$VERSION # --no-cache
+docker build . -f ./Dockerfile -t $DOCKER_TAG:$VERSION --no-cache
 docker build . -f ./Dockerfile -t $DOCKER_TAG:latest
 
 if [[ -z "${DOCKER_PASSWORD}" ]] || [[ -z "${TRAVIS_TAG}" ]]; then
