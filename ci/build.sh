@@ -4,6 +4,7 @@ echo "Starting build process in: `pwd`"
 set -e
 
 VERSION="${TRAVIS_TAG:-0.0.0}"
+VERSION="${VERSION#v}"
 : "${DOCKER_TAG:=sumologic/fluentd-kubernetes-sumologic}"
 : "${DOCKER_USERNAME:=sumodocker}"
 PLUGIN_NAME="fluent-plugin-kubernetes_sumologic"
