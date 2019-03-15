@@ -2,6 +2,8 @@ FROM fluent/fluentd:v1.3.2-debian AS builder
 
 ENV PATH /home/fluent/.gem/ruby/2.3.0/bin:$PATH
 
+COPY ./fluent-plugin-kubernetes_sumologic*.gem ./
+
 # New fluent image dynamically creates user in entrypoint
 RUN [ -f /bin/entrypoint.sh ] && /bin/entrypoint.sh echo || : && \
     apt-get update && \
@@ -14,6 +16,7 @@ RUN [ -f /bin/entrypoint.sh ] && /bin/entrypoint.sh echo || : && \
     gem install fluent-plugin-concat -v 2.3.0 && \
     gem install fluent-plugin-rewrite-tag-filter -v 2.1.0 && \
     gem install fluent-plugin-prometheus -v 1.1.0 && \
+    gem install fluent-plugin-kubernetes_sumologic && \
     rm -rf /home/fluent/.gem/ruby/2.3.0/cache/*.gem && \
     gem sources -c && \
     apt-get remove --purge -y build-essential ruby-dev libffi-dev libsystemd-dev && \
@@ -64,7 +67,5 @@ COPY --from=builder /var/lib/gems /var/lib/gems
 COPY ./conf.d/ /fluentd/conf.d/
 COPY ./etc/* /fluentd/etc/
 COPY ./entrypoint.sh /fluentd/
-COPY ./fluent-plugin-kubernetes_sumologic*.gem ./
-RUN gem install fluent-plugin-kubernetes_sumologic
 
 ENTRYPOINT ["/fluentd/entrypoint.sh"]
