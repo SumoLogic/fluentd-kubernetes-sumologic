@@ -1,5 +1,15 @@
 lang: ruby
-
-script: bundle exec rake
-
-rvm: 2.3
+services: docker
+before_install:
+  - rm -f ./Gemfile.lock
+  - gem install bundler
+script: ci/build.sh
+deploy:
+  provider: rubygems
+  skip_cleanup: true
+  api_key:
+    secure: utz+1f2fW1CTu3rTcvpqz6kcQQak4+1Fb4MvlCHKE4nqjC2ujhxjagzXydFwBVuyrw+/VvFfNshZuO5Drz3qpvcLAqPd7ptru3bnYDiwMTFBiVg3SSVtTFphlNKuwNwM4alT/7Jhi3eW0LVXYAXPA3nhh7fOkTbJb9J2FcKD1/ty1ybgFVeUJlaJ8pcqA0Q4PD/dW/6CMkzt4x2CDgsE+MsufFg2SqGelxty1vWIk4oBa6PsDgAoauX8d9KUsa5MRFi7OWTrZviDKwfHRrTb99jW/k+4iQX0+gwIWDOQwTrajQreNIShvwciiA71MdQ60uFNPQYLretrt2C1cIyeB6Vyt/ozGREo6JfLpCNiwwS2PmWknDsa4nQFytrE6wH9qRQz89Q8vkr4dMlneVIgUDkQBVe7nVuatKOBMwN+ZxHLoDdVcGzLz2wWIzc7FcIiUWFphOiWmZB8G4+St+zOyVCTM25qHby9xs0DDveXyCLXCL2CCip7lG7ZnBaWrmW43YvLKKip2NGmlmi6oecsvT8IbCMxJoj5hGgJXbzYC8dAJ0ZATuVbQuzn94hhPwWWOLkcJ3xqg8jzEwoiMhYvzjvywTlKlc+lgglXIvQVfA4HXmttYX1WkbXuQD4CtdUgdB5JznsaVQo3n9UwD1iiAk/kuwWyKOOC+AmSX2SKlb0=
+  gem: fluent-plugin-kubernetes_sumologic
+  on:
+    tags: true
+    repo: SumoLogic/fluentd-kubernetes-sumologic

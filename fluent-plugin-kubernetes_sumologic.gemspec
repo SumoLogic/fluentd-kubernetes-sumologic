@@ -4,9 +4,9 @@ $LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)
 
 Gem::Specification.new do |gem|
   gem.name          = "fluent-plugin-kubernetes_sumologic"
-  gem.version       = "2.0.0"
-  gem.authors       = ["Frank Reno"]
-  gem.email         = ["frank.reno@me.com"]
+  gem.version       = "0.0.0"
+  gem.authors       = ["Sumo Logic"]
+  gem.email         = ["collection@sumologic.com"]
   gem.description   = %q{FluentD plugin to extract logs from Kubernetes clusters, enrich and ship to Sumo logic.}
   gem.summary       = %q{FluentD plugin to extract logs from Kubernetes clusters, enrich and ship to Sumo logic.}
   gem.homepage      = "https://github.com/SumoLogic/fluentd-kubernetes-sumologic"
@@ -16,7 +16,6 @@ Gem::Specification.new do |gem|
   gem.executables   = gem.files.grep(%r{^bin/}) { |f| File.basename(f) }
   gem.test_files    = gem.files.grep(%r{^(test|spec|features)/})
   gem.require_paths = ["lib"]
-  gem.has_rdoc      = false
 
   gem.required_ruby_version = '>= 2.0.0'
 
