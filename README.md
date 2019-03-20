@@ -96,7 +96,7 @@ Environment | Variable Description
 `EXCLUDE_POD_REGEX`|A regular expression for pods. Matching pods will be excluded from Sumo. The logs will still be sent to FluentD.
 `EXCLUDE_PRIORITY_REGEX`|A regular expression for syslog [priorities](https://en.wikipedia.org/wiki/Syslog#Severity_level). Matching priorities will be excluded from Sumo. The logs will still be sent to FluentD.
 `EXCLUDE_UNIT_REGEX` |A regular expression for `systemd` units. Matching units will be excluded from Sumo. The logs will still be sent to FluentD.
-`FLUENTD_SOURCE`|Fluentd can tail files or query `systemd`. Allowable values: `file`, `Systemd`. <br/><br/>Default: `file` 
+`FLUENTD_SOURCE`|Fluentd can tail files or query `systemd`. Allowable values: `file`, `Systemd`, `forward`. <br/><br/>Default: `file` 
 `FLUENTD_USER_CONFIG_DIR`|A directory of user-defined fluentd configuration files, which must be in the  `*.conf` directory in the container.
 `FLUSH_INTERVAL` |How frequently to push logs to Sumo.<br/><br/>Default: `5s`
 `KUBERNETES_META`|Include or exclude Kubernetes metadata such as `namespace` and `pod_name` if using JSON log format. <br/><br/>Default: `true`
@@ -128,6 +128,8 @@ Environment | Variable Description
 `K8S_METADATA_FILTER_BEARER_CACHE_TTL`|Option to control the enabling of [metadata filter plugin cache_ttl](https://github.com/fabric8io/fluent-plugin-kubernetes_metadata_filter#configuration). Default: `3600`
 `K8S_NODE_NAME`|If set, improves [caching of pod metadata](https://github.com/fabric8io/fluent-plugin-kubernetes_metadata_filter#environment-variables-for-kubernetes) and reduces API calls. 
 `VERIFY_SSL`|Verify ssl certificate of sumologic endpoint. Default: `true`
+`FORWARD_INPUT_BIND`|The bind address to listen to if using forward as `FLUENTD_SOURCE`. Default: `0.0.0.0` (all addresses)
+`FORWARD_INPUT_PORT`|The port to listen to if using forward as `FLUENTD_SOURCE`. Default: `24224`
 
 
 The following table show which  environment variables affect which Fluentd sources.
