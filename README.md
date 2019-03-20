@@ -96,7 +96,7 @@ Environment | Variable Description
 `EXCLUDE_POD_REGEX`|A regular expression for pods. Matching pods will be excluded from Sumo. The logs will still be sent to FluentD.
 `EXCLUDE_PRIORITY_REGEX`|A regular expression for syslog [priorities](https://en.wikipedia.org/wiki/Syslog#Severity_level). Matching priorities will be excluded from Sumo. The logs will still be sent to FluentD.
 `EXCLUDE_UNIT_REGEX` |A regular expression for `systemd` units. Matching units will be excluded from Sumo. The logs will still be sent to FluentD.
-`FLUENTD_SOURCE`|Fluentd can tail files or query `systemd`. Allowable values: `file`, `Systemd`, `forward`. <br/><br/>Default: `file` 
+`FLUENTD_SOURCE`|Fluentd can use log tail, systemd query or forward as the source, Allowable values: `file`, `systemd`, `forward`. <br/><br/>Default: `file`
 `FLUENTD_USER_CONFIG_DIR`|A directory of user-defined fluentd configuration files, which must be in the  `*.conf` directory in the container.
 `FLUSH_INTERVAL` |How frequently to push logs to Sumo.<br/><br/>Default: `5s`
 `KUBERNETES_META`|Include or exclude Kubernetes metadata such as `namespace` and `pod_name` if using JSON log format. <br/><br/>Default: `true`
