@@ -30,6 +30,8 @@ spec:
         name: fluentd
         imagePullPolicy: Always
         volumeMounts:
+        - name: fluentd-sumologic-config
+          mountPath: /fluentd/etc
         - name: host-logs
           mountPath: /mnt/log/
           readOnly: true
@@ -41,33 +43,6 @@ spec:
           readOnly: true
         - name: pos-files
           mountPath: /mnt/pos/
-        - name: fluentd-sumologic-config
-          mountPath: /fluentd/etc/fluent.file.conf
-          subPath: fluent.file.conf
-        - name: fluentd-sumologic-config
-          mountPath: /fluentd/etc/fluent.forward.conf
-          subPath: fluent.forward.conf
-        - name: fluentd-sumologic-config
-          mountPath: /fluentd/etc/fluent.systemd.conf
-          subPath: fluent.systemd.conf
-        - name: fluentd-sumologic-config
-          mountPath: /fluentd/conf.d/out.sumo.conf
-          subPath: out.sumo.conf
-        - name: fluentd-sumologic-config
-          mountPath: /fluentd/conf.d/file/source.containers.conf
-          subPath: file.source.containers.conf
-        - name: fluentd-sumologic-config
-          mountPath: /fluentd/conf.d/file/source.docker.conf
-          subPath: file.source.docker.conf
-        - name: fluentd-sumologic-config
-          mountPath: /fluentd/conf.d/file/source.kubernetes.conf
-          subPath: file.source.kubernetes.conf
-        - name: fluentd-sumologic-config
-          mountPath: /fluentd/conf.d/systemd/source.containers.conf
-          subPath: systemd.source.containers.conf
-        - name: fluentd-sumologic-config
-          mountPath: /fluentd/conf.d/systemd/source.systemd.conf
-          subPath: systemd.source.systemd.conf
         env:
         - name: COLLECTOR_URL
           valueFrom:
@@ -103,7 +78,7 @@ data:
     </match>
 
   fluent.file.conf: |-
-    <match fluentd.**>
+    <match fluent.**>
       @type null
     </match>
 
@@ -113,9 +88,9 @@ data:
       port 24220
     </source>
 
-    @include /fluentd/conf.d/file/source.*.conf
-    @include /fluentd/conf.d/user/*.conf
-    @include /fluentd/conf.d/out.sumo.conf
+    @include /fluentd/etc/file.source.*.conf
+    @include /fluentd/etc/user/*.conf
+    @include /fluentd/etc/out.sumo.conf
 
   fluent.forward.conf: |-
     ## built-in TCP input
@@ -133,12 +108,12 @@ data:
       port 24220
     </source>
 
-    @include /fluentd/conf.d/forward/source.*.conf
-    @include /fluentd/conf.d/user/*.conf
-    @include /fluentd/conf.d/out.sumo.conf
+    @include /fluentd/etc/forward.source.*.conf
+    @include /fluentd/etc/user/*.conf
+    @include /fluentd/etc/out.sumo.conf
 
   fluent.systemd.conf: |-
-    <match fluentd.**>
+    <match fluent.**>
       @type null
     </match>
 
@@ -148,9 +123,9 @@ data:
       port 24220
     </source>
 
-    @include /fluentd/conf.d/systemd/source.*.conf
-    @include /fluentd/conf.d/user/*.conf
-    @include /fluentd/conf.d/out.sumo.conf
+    @include /fluentd/etc/systemd.source.*.conf
+    @include /fluentd/etc/user/*.conf
+    @include /fluentd/etc/out.sumo.conf
 
   file.source.containers.conf: |-
     <source>
@@ -215,7 +190,7 @@ data:
         exclude_host_regex "#{ENV['EXCLUDE_HOST_REGEX']}"
       </filter>
 
-      @include /fluentd/conf.d/out.sumo.conf
+      @include /fluentd/etc/out.sumo.conf
     </label>
 
   file.source.docker.conf: |-

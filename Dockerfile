@@ -30,8 +30,7 @@ ENV PATH /home/fluent/.gem/ruby/2.3.0/bin:$PATH
 RUN mkdir -p /mnt/pos
 EXPOSE 24284
 
-RUN mkdir -p /fluentd/conf.d && \
-    mkdir -p /fluentd/etc && \
+RUN mkdir -p /fluentd/etc && \
     mkdir -p /fluentd/plugins
 
 # Default settings
