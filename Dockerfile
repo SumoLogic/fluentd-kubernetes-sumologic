@@ -66,8 +66,6 @@ ENV FORWARD_INPUT_BIND "0.0.0.0"
 ENV FORWARD_INPUT_PORT "24224"
 
 COPY --from=builder /var/lib/gems /var/lib/gems
-COPY ./conf.d/ /fluentd/conf.d/
-COPY ./etc/* /fluentd/etc/
 COPY ./entrypoint.sh /fluentd/
 
 ENTRYPOINT ["/fluentd/entrypoint.sh"]
