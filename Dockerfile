@@ -30,8 +30,7 @@ ENV PATH /home/fluent/.gem/ruby/2.3.0/bin:$PATH
 RUN mkdir -p /mnt/pos
 EXPOSE 24284
 
-RUN mkdir -p /fluentd/conf.d && \
-    mkdir -p /fluentd/etc && \
+RUN mkdir -p /fluentd/etc && \
     mkdir -p /fluentd/plugins
 
 # Default settings
@@ -66,8 +65,6 @@ ENV FORWARD_INPUT_BIND "0.0.0.0"
 ENV FORWARD_INPUT_PORT "24224"
 
 COPY --from=builder /var/lib/gems /var/lib/gems
-COPY ./conf.d/ /fluentd/conf.d/
-COPY ./etc/* /fluentd/etc/
 COPY ./entrypoint.sh /fluentd/
 
 ENTRYPOINT ["/fluentd/entrypoint.sh"]
