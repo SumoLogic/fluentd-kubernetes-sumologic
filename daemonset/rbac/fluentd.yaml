@@ -88,6 +88,9 @@ spec:
             secretKeyRef:
               name: sumologic
               key: collector-url
+        # Improve GC for memory limited envs like docker.
+        - name: RUBY_GC_HEAP_OLDOBJECT_LIMIT_FACTOR
+          value: "0.9"
       tolerations:
           #- operator: "Exists"
           - effect: "NoSchedule"
