@@ -429,7 +429,7 @@ This daemonset setting mounts /var/log as service account FluentD so you need to
 oc adm policy add-scc-to-user privileged system:serviceaccount:logging:fluentd
 oc adm policy add-cluster-role-to-user cluster-reader system:serviceaccount:logging:fluentd
 oc label node —all logging-sumologic-fluentd=true
-oc patch ds sumologic-fluentd -p "spec:
+oc patch ds fluentd-sumologic -p "spec:
   template:
     spec:
       containers:
