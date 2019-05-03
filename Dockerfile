@@ -1,6 +1,6 @@
 FROM fluent/fluentd:v1.1.3-debian
 WORKDIR /home/fluent
-ENV PATH /home/fluent/.gem/ruby/2.3.0/bin:$PATH
+ENV PATH /home/fluent/.gem/ruby/2.3.1/bin:$PATH
 
 # New fluent image dynamically creates user in entrypoint
 RUN [ -f /bin/entrypoint.sh ] && /bin/entrypoint.sh echo || : && \
