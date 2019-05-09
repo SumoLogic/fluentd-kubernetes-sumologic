@@ -1,5 +1,5 @@
-FROM fluent/fluentd:v1.4-debian-2 AS builder
-USER root
+FROM fluent/fluentd:v1.3.3-debian-1.0 AS builder
+
 ENV PATH /home/fluent/.gem/ruby/2.3.0/bin:$PATH
 
 COPY ./fluent-plugin-kubernetes_sumologic*.gem ./
@@ -22,8 +22,8 @@ RUN [ -f /bin/entrypoint.sh ] && /bin/entrypoint.sh echo || : && \
     apt-get remove --purge -y build-essential ruby-dev libffi-dev libsystemd-dev && \
     rm -rf /var/lib/apt/lists/*
 
-FROM fluent/fluentd:v1.4-debian-2
-USER root
+FROM fluent/fluentd:v1.3.3-debian-1.0
+
 WORKDIR /home/fluent
 ENV PATH /home/fluent/.gem/ruby/2.3.0/bin:$PATH
 
