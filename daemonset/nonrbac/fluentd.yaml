@@ -16,6 +16,10 @@ spec:
         hostPath:
           path: /var/run/fluentd-pos
           type: ""
+      # User data 1 mount point for Kubernetes running in OCI Container Engine for Kubernetes (OKE)
+      - name: "u01"
+        hostPath:
+          path: /u01
       - name: host-logs
         hostPath:
           path: /var/log/
@@ -40,6 +44,9 @@ spec:
           readOnly: true
         - name: docker-logs
           mountPath: /var/lib/docker/
+          readOnly: true
+        - name: "u01"
+          mountPath: /u01
           readOnly: true
         - name: pos-files
           mountPath: /mnt/pos/
