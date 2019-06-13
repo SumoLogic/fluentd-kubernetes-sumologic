@@ -18,6 +18,7 @@ RUN [ -f /bin/entrypoint.sh ] && /bin/entrypoint.sh echo || : && \
     gem install fluent-plugin-rewrite-tag-filter -v 2.1.0 && \
     gem install fluent-plugin-prometheus -v 1.1.0 && \
     gem install fluent-plugin-kubernetes_sumologic && \
+    gem install fluent-plugin-modsecurity && \
     rm -rf /home/fluent/.gem/ruby/2.3.0/cache/*.gem && \
     gem sources -c && \
     apt-get remove --purge -y build-essential ruby-dev libffi-dev libsystemd-dev && \
