@@ -1,8 +1,19 @@
 # Change Log
 
+## 2.4.0
+- Improve Ruby GC to fix #121 [(#125)](https://github.com/SumoLogic/fluentd-kubernetes-sumologic/pull/125)
+- Migrate FluentD Conf files to ConfigMap to make customizing FluentD conf simpler [(#124)](https://github.com/SumoLogic/fluentd-kubernetes-sumologic/pull/124)
+- Add /u01 mount for running fluentd plugin under OCI OKE [(#129)](https://github.com/SumoLogic/fluentd-kubernetes-sumologic/pull/129)
+- Add support for log metadata [(#133)](https://github.com/SumoLogic/fluentd-kubernetes-sumologic/pull/133)
+
+## 2.3.1
+- Support %{pod_id} interpolation in source metadata [(#110)](https://github.com/SumoLogic/fluentd-kubernetes-sumologic/pull/110)
+- Support forward input as source [(#113)](https://github.com/SumoLogic/fluentd-kubernetes-sumologic/pull/113)
+
+
 ## 2.3.0
-- Polish "reduce metadata" feature with keeping `namespace_name` [PR #108](https://github.com/SumoLogic/fluentd-kubernetes-sumologic/pull/108)
-- Bug fix - missing params in `containers.**` [PR #109](https://github.com/SumoLogic/fluentd-kubernetes-sumologic/pull/109)
+- Polish "reduce metadata" feature with keeping `namespace_name` [(#108)](https://github.com/SumoLogic/fluentd-kubernetes-sumologic/pull/108)
+- Bug fix - missing params in `containers.**` [(#109)](https://github.com/SumoLogic/fluentd-kubernetes-sumologic/pull/109)
 
 ## 2.2.0
 - bump base image to 1.3.2
