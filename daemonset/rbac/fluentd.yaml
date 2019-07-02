@@ -62,7 +62,7 @@ spec:
         hostPath:
           path: /var/lib/docker
       containers:
-      - image: sumologic/fluentd-kubernetes-sumologic:latest
+      - image: sumologic/fluentd-kubernetes-sumologic:v2.3.2
         name: fluentd
         imagePullPolicy: Always
         volumeMounts:
