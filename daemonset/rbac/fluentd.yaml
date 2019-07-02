@@ -65,7 +65,7 @@ spec:
         configMap:
           name: fluentd-sumologic-config
       containers:
-      - image: sumologic/fluentd-kubernetes-sumologic:latest
+      - image: sumologic/fluentd-kubernetes-sumologic:v2.4.1
         name: fluentd
         imagePullPolicy: Always
         volumeMounts:
