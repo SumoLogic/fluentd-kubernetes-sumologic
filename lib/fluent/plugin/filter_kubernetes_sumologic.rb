@@ -218,6 +218,11 @@ module Fluent::Plugin
           log_fields["host"] = kubernetes["host"] unless kubernetes["host"].nil?
           log_fields["master_url"] = kubernetes["master_url"] unless kubernetes["master_url"].nil?
           log_fields["namespace_id"] = kubernetes["namespace_id"] unless kubernetes["namespace_id"].nil?
+          log_fields["service"] = kubernetes["service"] unless kubernetes["service"].nil?
+          log_fields["deployment"] = kubernetes["deployment"] unless kubernetes["deployment"].nil?
+          log_fields["daemonset"] = kubernetes["daemonset"] unless kubernetes["daemonset"].nil?
+          log_fields["replicaset"] = kubernetes["replicaset"] unless kubernetes["replicaset"].nil?
+          log_fields["statefulset"] = kubernetes["statefulset"] unless kubernetes["statefulset"].nil?
         end
       end
 
