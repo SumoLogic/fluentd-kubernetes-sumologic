@@ -214,15 +214,9 @@ module Fluent::Plugin
           log_fields["container"] = kubernetes["container_name"] unless kubernetes["container_name"].nil?
           log_fields["namespace"] = kubernetes["namespace_name"] unless kubernetes["namespace_name"].nil?
           log_fields["pod"] = kubernetes["pod_name"] unless kubernetes["pod_name"].nil?
-          log_fields["pod_id"] = kubernetes["pod_id"] unless kubernetes["pod_id"].nil?
-          log_fields["host"] = kubernetes["host"] unless kubernetes["host"].nil?
-          log_fields["master_url"] = kubernetes["master_url"] unless kubernetes["master_url"].nil?
-          log_fields["namespace_id"] = kubernetes["namespace_id"] unless kubernetes["namespace_id"].nil?
-          log_fields["service"] = kubernetes["service"] unless kubernetes["service"].nil?
-          log_fields["deployment"] = kubernetes["deployment"] unless kubernetes["deployment"].nil?
-          log_fields["daemonset"] = kubernetes["daemonset"] unless kubernetes["daemonset"].nil?
-          log_fields["replicaset"] = kubernetes["replicaset"] unless kubernetes["replicaset"].nil?
-          log_fields["statefulset"] = kubernetes["statefulset"] unless kubernetes["statefulset"].nil?
+          ["pod_id", "host", "master_url", "namespace_id", "service", "deployment", "daemonset", "replicaset", "statefulset"].each do |key|
+            log_fields[key] = kubernetes[key] unless kubernetes[key].nil?
+          end
         end
       end
 
