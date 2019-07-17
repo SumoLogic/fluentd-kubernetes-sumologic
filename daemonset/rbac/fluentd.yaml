@@ -67,7 +67,7 @@ spec:
       containers:
       - image: sumologic/fluentd-kubernetes-sumologic:v2.4.1
         name: fluentd
-        imagePullPolicy: Always
+        imagePullPolicy: IfNotPresent
         volumeMounts:
         - name: fluentd-sumologic-config
           mountPath: /fluentd/etc
