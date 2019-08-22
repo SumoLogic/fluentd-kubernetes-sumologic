@@ -1,4 +1,6 @@
 lang: ruby
+rvm:
+  - 2.4.4
 services: docker
 before_install:
   - rm -f ./Gemfile.lock
