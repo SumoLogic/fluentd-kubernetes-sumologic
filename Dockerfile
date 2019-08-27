@@ -24,10 +24,12 @@ RUN [ -f /bin/entrypoint.sh ] && /bin/entrypoint.sh echo || : && \
     apt-get remove --purge -y build-essential ruby-dev libffi-dev libsystemd-dev && \
     rm -rf /var/lib/apt/lists/*
 
-FROM fluent/fluentd:v1.3.2-debian
+FROM fluent/fluentd:v1.7.0-debian-1.0
 
 WORKDIR /home/fluent
 ENV PATH /home/fluent/.gem/ruby/2.5.0/bin:$PATH
+
+USER root
 
 RUN mkdir -p /mnt/pos
 EXPOSE 24284
@@ -68,5 +70,7 @@ ENV FORWARD_INPUT_PORT "24224"
 
 COPY --from=builder /var/lib/gems /var/lib/gems
 COPY ./entrypoint.sh /fluentd/
+
+USER docker
 
 ENTRYPOINT ["/fluentd/entrypoint.sh"]
