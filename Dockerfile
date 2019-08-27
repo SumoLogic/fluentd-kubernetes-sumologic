@@ -1,4 +1,4 @@
-FROM fluent/fluentd:v1.4.2-debian-2.0 AS builder
+FROM fluent/fluentd:v1.7.0-debian-1.0 AS builder
 
 ENV PATH /home/fluent/.gem/ruby/2.5.0/bin:$PATH
 
