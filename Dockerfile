@@ -71,6 +71,4 @@ ENV FORWARD_INPUT_PORT "24224"
 COPY --from=builder /usr/local/bundle /usr/local/bundle
 COPY ./entrypoint.sh /fluentd/
 
-USER fluent
-
 ENTRYPOINT ["/fluentd/entrypoint.sh"]
