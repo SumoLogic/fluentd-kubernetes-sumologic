@@ -1,6 +1,6 @@
 FROM fluent/fluentd:v1.7.0-debian-1.0 AS builder
 
-ENV PATH /home/fluent/.gem/ruby/2.5.0/bin:$PATH
+ENV PATH /home/fluent/.gem/ruby/2.6.0/bin:$PATH
 
 COPY ./fluent-plugin-kubernetes_sumologic*.gem ./
 
@@ -19,17 +19,17 @@ RUN [ -f /bin/entrypoint.sh ] && /bin/entrypoint.sh echo || : && \
     gem install fluent-plugin-rewrite-tag-filter -v 2.1.0 && \
     gem install fluent-plugin-prometheus -v 1.1.0 && \
     gem install fluent-plugin-kubernetes_sumologic && \
-    rm -rf /home/fluent/.gem/ruby/2.5.0/cache/*.gem && \
+    rm -rf /home/fluent/.gem/ruby/2.6.0/cache/*.gem && \
     gem sources -c && \
     apt-get remove --purge -y build-essential ruby-dev libffi-dev libsystemd-dev && \
     rm -rf /var/lib/apt/lists/*
 
 FROM fluent/fluentd:v1.7.0-debian-1.0
 
-WORKDIR /home/fluent
-ENV PATH /home/fluent/.gem/ruby/2.5.0/bin:$PATH
-
 USER root
+
+WORKDIR /home/fluent
+ENV PATH /home/fluent/.gem/ruby/2.6.0/bin:$PATH
 
 RUN mkdir -p /mnt/pos
 EXPOSE 24284
@@ -68,9 +68,9 @@ ENV VERIFY_SSL "true"
 ENV FORWARD_INPUT_BIND "0.0.0.0"
 ENV FORWARD_INPUT_PORT "24224"
 
-COPY --from=builder /var/lib/gems /var/lib/gems
+COPY --from=builder /usr/local/bundle /usr/local/bundle
 COPY ./entrypoint.sh /fluentd/
 
-USER docker
+USER fluent
 
 ENTRYPOINT ["/fluentd/entrypoint.sh"]
