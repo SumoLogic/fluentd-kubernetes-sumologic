@@ -1,5 +1,8 @@
 [![Build Status](https://travis-ci.org/SumoLogic/fluentd-kubernetes-sumologic.svg?branch=master)](https://travis-ci.org/SumoLogic/fluentd-kubernetes-sumologic) [![Gem Version](https://badge.fury.io/rb/fluent-plugin-kubernetes_sumologic.svg)](https://badge.fury.io/rb/fluent-plugin-kubernetes_sumologic) [![Docker Pulls](https://img.shields.io/docker/pulls/sumologic/fluentd-kubernetes-sumologic.svg)](https://hub.docker.com/r/sumologic/fluentd-kubernetes-sumologic) [![contributions welcome](https://img.shields.io/badge/contributions-welcome-brightgreen.svg?style=flat)](https://github.com/SumoLogic/fluentd-output-sumologic/issues)
 
+## Deprecation notice
+Sumo Logic has ended development of this project, which has been replaced by the officially supported [Sumo Logic Kubernetes Collection](https://github.com/SumoLogic/sumologic-kubernetes-collection) project. If you are planning to set up collection from a new cluster to Sumo Logic, we highly recommend that you use the supported Sumo Logic Kubernetes Collection project rather than this one. We will continue to support bug fixes for this project, but we expect to end support in summer 2020. Please consult the Kubernetes Collection project for instructions on how to [migrate existing instances](https://github.com/SumoLogic/sumologic-kubernetes-collection/blob/master/deploy/docs/Migration_Steps.md) of this project to our new, fully supported solution.
+
 This page describes the Sumo Kubernetes [Fluentd](http://www.fluentd.org/) plugin.
 
 ## Support
